@@ -126,16 +126,10 @@ public class AgentManager : MonoBehaviour
     /// </summary>
     private void CheckDeath()
     {
-        // Check if the agent starves
-        if (foodQuantity <= 0)
+        // Check if the agent starves or dies from old age
+        if (foodQuantity <= 0 || age >= lifespan)
         {
-            // Die
-        }
-        
-        // Check if the agent dies from old age
-        if (age >= lifespan)
-        {
-            // Die
+            this.Destroy();
         }
     }
 
