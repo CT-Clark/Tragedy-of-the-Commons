@@ -13,15 +13,18 @@ public class SimManager : MonoBehaviour
 
     // Private fields
     private int numberOfAgents = 100;
-    private float averageLifespan = 100f;
-    private float fossilFuelFoodPenalty = 0.01f; // The penalty using fossil fuels applies to global food production
-    private float fossilFuelLifePenalty = 0.01f; // The penalty using fossil fuels applies to global lifespan expectation
+    
+    
 
     // Public fields
     public float foodProduction = 100f; // In %
-    public float pollution = 0f; // In %
+    public float totalFood = 1000000f; // Total amount of food the world starts with
+    public float pollution = 0f; // In % ?
     public float solarFoodValue = 0.01f; // The amount of food an agent using solar collects
     public float fossilFuelFoodBonus = 0.01f; // The bonus using fossil fuels to collect food
+    public float fossilFuelLifePenalty = 0.01f; // The penalty using fossil fuels applies to global lifespan expectation
+    public float fossilFuelPollutionPenalty = 0.01f; // How much pollution to add when fossil fuels used
+    public float averageLifespan = 100f;
 
     public AgentManager agent; // An object to hold an instance of an agent
 
@@ -76,9 +79,6 @@ public class SimManager : MonoBehaviour
         float spawnX = Random.Range(-100f, 100f);
         float spawnY = Random.Range(-100f, 100f);
         agent.transform.position = new Vector2(spawnX, spawnY);
-
-        // Assign the agent a number
-        agentScript.agentNumber = agentNumber; 
     }
 
     #endregion Methods
