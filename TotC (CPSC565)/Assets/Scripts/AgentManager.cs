@@ -112,9 +112,11 @@ public class AgentManager : MonoBehaviour
     /// </summary>
     private void CheckSpawn()
     {
-        if (foodQuantity >= foodToBreed)
+        if (foodQuantity >= foodToBreed + 10f)
         {
+            foodQuantity -= foodToBreed; // Breeding uses food
             // Spawn a new agent (Or maybe a few?)
+
         }
     }
 
