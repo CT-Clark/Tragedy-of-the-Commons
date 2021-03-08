@@ -139,7 +139,7 @@ public class AgentManager : MonoBehaviour
     public void CheckCalamity()
     {
         // TODO: Factor in altruism
-        if (simScript.foodProduction < foresight || simScript.averageLifespan < foresight)
+        if ((simScript.foodProduction - simScript.pollution) < foresight || simScript.averageLifespan < foresight)
         {
             energySource = "solar";
         }
