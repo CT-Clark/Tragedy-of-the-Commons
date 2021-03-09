@@ -29,8 +29,9 @@ public class SimManager : MonoBehaviour
     public float fossilFuelLifePenalty = 0.01f;
     public float averageLifespan = 100f;
 
-    public AgentManager[] agents;
+    public List<AgentManager> agents = new List<AgentManager>();
     public AgentManager agent; // An object to hold an instance of an agent
+    public GameObject AgentTemplate; 
 
     #endregion
 
