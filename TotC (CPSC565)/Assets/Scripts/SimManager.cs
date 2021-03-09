@@ -26,6 +26,7 @@ public class SimManager : MonoBehaviour
     public float fossilFuelFoodBonus = 0.01f; // The bonus using fossil fuels to collect food
     public float fossilFuelAverageLifePenalty = 0.01f; // The penalty using fossil fuels applies to global lifespan expectation
     public float fossilFuelPollutionPenalty = 0.01f; // How much pollution to add when fossil fuels used
+    public float fossilFuelLifePenalty = 0.01f;
     public float averageLifespan = 100f;
 
     public AgentManager[] agents;
