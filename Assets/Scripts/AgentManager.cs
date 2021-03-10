@@ -15,6 +15,7 @@ public class AgentManager : MonoBehaviour
     // Private fields
     public float foodQuantity; // This agents collection of food
     public float age; // The agent's age
+    private System.Random rnd;
 
     // Public fields
     public float altruism; // Scale from 0-100, how likely they are to change to solar
@@ -70,16 +71,30 @@ public class AgentManager : MonoBehaviour
 
             lifespan = simScript.averageLifespan + UnityEngine.Random.Range(-10f, 10f);
             foodToBreed = 80f + UnityEngine.Random.Range(-20f, 20f);
+
         }
+
+        rnd = new System.Random();
     }
 
-    /*
     // Update is called once per frame
     void Update()
     {
+
+        // apply some random rotation, somewhat limited to not just completely flip
+        //transform.Rotate(transform.right, UnityEngine.Random.Range(-100f, 100f));
+        //transform.Rotate(transform.right, UnityEngine.Random.Range(-100f, 100f));
+
+        // move in direction of rotation
+        Vector2 newPosition = transform.position;
+        //newPosition.x = newPosition.x + 0.1f * transform.right.x;
+        //newPosition.y = newPosition.y + 0.1f * transform.up.y;
+
+        newPosition.x = UnityEngine.Random.Range(newPosition.x - 0.5f, newPosition.x + 0.5f);
+        newPosition.y = UnityEngine.Random.Range(newPosition.y - 0.5f, newPosition.y + 0.5f);
         
+        transform.position = newPosition;    
     }
-    */
 
     // FixedUpdate is used for changing the simulation state 
     void FixedUpdate()
@@ -131,8 +146,8 @@ public class AgentManager : MonoBehaviour
             simScript.agents.Add(agentScript);
 
             // Change the player's location
-            float spawnX = transform.position.x + UnityEngine.Random.Range(-10f, 10f);
-            float spawnY = transform.position.y + UnityEngine.Random.Range(-10f, 10f);
+            float spawnX = transform.position.x + UnityEngine.Random.Range(-1f, 1f);
+            float spawnY = transform.position.y + UnityEngine.Random.Range(-1f, 1f);
             agent.transform.position = new Vector2(spawnX, spawnY);
             simScript.agentCount++;
 

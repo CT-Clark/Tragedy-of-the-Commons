@@ -19,9 +19,10 @@ public class SimManager : MonoBehaviour
     // Private fields
     private int numberOfAgents = 100;
     public int agentCount = 0;
-    
 
     // Public fields
+    public Vector2 screenBounds;
+
     public float foodProduction;
     public float totalFood = 1000000f; // Total amount of food the world starts with
     public float pollution;
@@ -122,6 +123,8 @@ public class SimManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
+
         PopulateAgents();
         InitializeUI();
         UpdateSettings();
@@ -151,6 +154,12 @@ public class SimManager : MonoBehaviour
             // The more pollution there is, the more it affects an agent's health (lifespan)
             element.ChangeLifespan(-(pollution/foodProduction / 100)); // An agent's lifespan decreases as the world is further polluted
             tempAverageLifespan += element.lifespan;
+
+            //Keep position within boundaries
+            Vector2 viewPos = element.transform.position;
+            viewPos.x = Mathf.Clamp(viewPos.x, screenBounds.x * -1, screenBounds.x);
+            viewPos.y = Mathf.Clamp(viewPos.y, screenBounds.y * -1, screenBounds.y);
+            element.transform.position = viewPos;
         }
         averageLifespan = tempAverageLifespan / agents.Count;
 
@@ -158,7 +167,6 @@ public class SimManager : MonoBehaviour
         foodProduction = agents.Count * 2f;
         totalFood += Math.Max(0, (foodProduction - pollution));
 
-        
     }
 
     #endregion BuiltInMethods
@@ -188,11 +196,20 @@ public class SimManager : MonoBehaviour
         agent.name = "Agent" + agentNumber;
         agents.Add(agentScript);
 
+        /*
         // Change the player's location
         float spawnX = UnityEngine.Random.Range(-100f, 100f);
         float spawnY = UnityEngine.Random.Range(-100f, 100f);
         agent.transform.position = new Vector2(spawnX, spawnY);
+        */
+
+        // set location
+        float spawnX = UnityEngine.Random.Range(screenBounds.x * -1, screenBounds.x);
+        float spawnY = UnityEngine.Random.Range(screenBounds.y * -1, screenBounds.y);
+        agent.transform.position = new Vector2(spawnX, spawnY);
+
         agentCount++;
+
     }
 
     #endregion Methods
