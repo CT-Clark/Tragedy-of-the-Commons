@@ -30,6 +30,7 @@ public class AgentManager : MonoBehaviour
     public AgentManager agentScript; // A reference to another agent (used for collisions)
     public AgentManager parentScript; // A reference to this agent's parent to determine traits
     public GameObject AgentTemplate;
+    public Color agentColor; // Correlates to the agent's current "energySource"
 
     #endregion
 
@@ -57,6 +58,7 @@ public class AgentManager : MonoBehaviour
             energySource = parentScript.energySource; // Kids are more likely to follow their parents' lead, so use the same energy source
             lifespan = Math.Max(0, ((parentScript.lifespan + UnityEngine.Random.Range(0f, 10f)) + simScript.averageLifespan) / 2);
             foodToBreed = Math.Max(25, parentScript.foodToBreed + UnityEngine.Random.Range(-5f, 5f));
+            agentColor = parentScript.agentColor;
         }
         else // Agent is first generation
         {
@@ -67,6 +69,8 @@ public class AgentManager : MonoBehaviour
             foresight = UnityEngine.Random.Range(0f, 100f);
             generation = 0;
             energySource = "fossilFuels";
+            agentColor = simScript.fossilFuelsColor;
+            AgentTemplate.GetComponent<SpriteRenderer>().color = agentColor;
 
             lifespan = simScript.averageLifespan + UnityEngine.Random.Range(-10f, 10f);
             foodToBreed = 80f + UnityEngine.Random.Range(-20f, 20f);
@@ -186,6 +190,8 @@ public class AgentManager : MonoBehaviour
                 Debug.Log(gameObject.name + "'s foresight: " + foresight + ", altruism: " + altruism + " | Pollution percentage: " + ((simScript.pollution / simScript.foodProduction) * 100) + "%");
             }
             energySource = "solar";
+            agentColor = simScript.renewablesColor;
+            AgentTemplate.GetComponent<SpriteRenderer>().color = agentColor;
         }
         // If average lifespan is too low and the agent is altruistic enough, change to (or continue to use) solar
         else if (simScript.averageLifespan < foresight && simScript.averageLifespan < altruism)
@@ -194,7 +200,9 @@ public class AgentManager : MonoBehaviour
             {
                 Debug.Log(gameObject.name + " has changed energy sources due to low average lifespan.");
             }
-            energySource = "solar"; 
+            energySource = "solar";
+            agentColor = simScript.renewablesColor;
+            AgentTemplate.GetComponent<SpriteRenderer>().color = agentColor;
         }
         // Otherwise use fossil fuels (The agent believes everything is okay in the world and would prefer to collect more food) Possibly change
         /*
@@ -205,6 +213,7 @@ public class AgentManager : MonoBehaviour
                 Debug.Log(gameObject.name + " has changed from solar to fossil fuels.");
             }
             energySource = "fossilFuels";
+            agentColor = simScript.fossilFuelsColor;
         }
         */
     }

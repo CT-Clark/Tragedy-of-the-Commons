@@ -30,6 +30,8 @@ public class SimManager : MonoBehaviour
     public float fossilFuelPollutionPenalty; // How much pollution to add when fossil fuels used
     public float averageLifespan;
     public float pollutionPercentage;
+    public Color fossilFuelsColor; //color used for fossil fuel users
+    public Color renewablesColor; //color used for renewables users
 
     public List<AgentManager> agents = new List<AgentManager>();
     public AgentManager agent; // An object to hold an instance of an agent
