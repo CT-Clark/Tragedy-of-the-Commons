@@ -232,14 +232,10 @@ public class AgentManager : MonoBehaviour
 
             if (energySource == "solar")
             {
-                // Heal pollution and lifespan
+                // Heal pollution
                 if (simScript.pollution > 0f)
                 {
                     simScript.pollution -= simScript.fossilFuelPollutionPenalty/2;
-                }
-                if (simScript.averageLifespan < 200f)
-                {
-                    simScript.averageLifespan += simScript.fossilFuelAverageLifePenalty/2;
                 }
             }
 
@@ -266,7 +262,8 @@ public class AgentManager : MonoBehaviour
         // Check if there's food to eat
         if (foodQuantity > 0f)
         {
-            foodQuantity -= simScript.solarFoodValue - UnityEngine.Random.Range(0f, simScript.solarFoodValue / 2); // Eat a variable amount of food
+            // Eat a variable amount of food, the maximum amount of food needed to eat is equal to the average amount produced by solar
+            foodQuantity -= simScript.solarFoodValue - UnityEngine.Random.Range(0f, simScript.solarFoodValue / 2); 
         }
     }
 
