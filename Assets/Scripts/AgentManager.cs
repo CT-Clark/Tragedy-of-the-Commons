@@ -12,9 +12,8 @@ public class AgentManager : MonoBehaviour
     #region Fields/Properties
 
     // Private fields
-    
-    private float foodQuantity; // This agents collection of food
-    private float age; // The agent's age
+    public float foodQuantity; // This agents collection of food
+    public float age; // The agent's age
 
     // Public fields
     public float altruism; // Scale from 0-100, how likely they are to change to solar
@@ -25,11 +24,12 @@ public class AgentManager : MonoBehaviour
     public string energySource; // Either "solar" or "fossilFuels"
     public int generation;
     public float lifespan; // When this agent will die due to time
-
+    public bool switchable;
 
     public SimManager simScript; // A reference to the world state
     public AgentManager agentScript; // A reference to another agent (used for collisions)
     public AgentManager parentScript; // A reference to this agent's parent to determine traits
+    public GameObject AgentTemplate;
 
     #endregion
 
@@ -39,10 +39,21 @@ public class AgentManager : MonoBehaviour
     void Awake()
     {
         // TODO: Get SimManager simScript
-        
-        age = 0;
-        foodQuantity = 50;
+        switchable = true;
 
+        simScript = GameObject.Find("SimManager").GetComponent<SimManager>();
+
+        age = 0;
+        foodQuantity = 50f;
+        //if (Random.Range(0f, 100f) < 10f)
+        //{
+        //    switchable = false;
+        //}
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
         if (parentScript) // If this agent has a parent then inherit a lot of traits from them
         {
             altruism = parentScript.altruism + Random.Range(-10f, 10f);
@@ -61,14 +72,11 @@ public class AgentManager : MonoBehaviour
             foresight = Random.Range(0f, 100f);
             generation = 0;
             energySource = "fossilFuels";
-            lifespan = simScript.averageLifespan + Random.Range(-10f, 10f);
-        }
-    }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+            lifespan = simScript.averageLifespan + Random.Range(-10f, 10f);
+            Debug.Log(lifespan);
+            foodToBreed = 50f;
+        }
     }
 
     // Update is called once per frame
@@ -85,6 +93,7 @@ public class AgentManager : MonoBehaviour
         CheckSpawn();
         CheckCalamity();
         GatherFood();
+        age += 0.1f;
     }
 
     // LateUpdate is called after FixedUpdate, used to handle collisions
@@ -112,10 +121,20 @@ public class AgentManager : MonoBehaviour
     /// </summary>
     private void CheckSpawn()
     {
-        if (foodQuantity >= foodToBreed + 10f)
+        if (foodQuantity >= foodToBreed + 10f && age > 20f)
         {
             foodQuantity -= foodToBreed; // Breeding uses food
-            // Spawn a new agent (Or maybe a few?)
+            GameObject agent = GameObject.Instantiate(AgentTemplate);
+            AgentManager agentScript = agent.GetComponent<AgentManager>();
+            agentScript.parentScript = GetComponent<AgentManager>();
+            agent.name = "Agent" + simScript.agentCount;
+            simScript.agents.Add(agentScript);
+
+            // Change the player's location
+            float spawnX = transform.position.x + Random.Range(-10f, 10f);
+            float spawnY = transform.position.y + Random.Range(-10f, 10f);
+            agent.transform.position = new Vector2(spawnX, spawnY);
+            simScript.agentCount++;
 
         }
     }
@@ -127,9 +146,15 @@ public class AgentManager : MonoBehaviour
     private void CheckDeath()
     {
         // Check if the agent starves or dies from old age
-        if (foodQuantity <= 0 || age >= lifespan)
+        if (foodQuantity <= 0)
         {
-            Destroy(this);
+            Debug.Log("This agent has died from lack of food.");
+            Destroy(gameObject);
+        }
+        if (age >= lifespan)
+        {
+            Debug.Log("This agent has died from old age.");
+            Destroy(gameObject);
         }
     }
 
@@ -139,9 +164,16 @@ public class AgentManager : MonoBehaviour
     public void CheckCalamity()
     {
         // TODO: Factor in altruism
-        if ((simScript.foodProduction - simScript.pollution) < foresight || simScript.averageLifespan < foresight)
+        if ((simScript.foodProduction - simScript.pollution) < foresight && energySource != "solar" && switchable) 
         {
             energySource = "solar";
+            Debug.Log("This agent has changed their energy source due to lack of food production");
+            Debug.Log(simScript.foodProduction + " " + simScript.pollution);
+        }
+        if (simScript.averageLifespan < foresight && energySource != "solar" && switchable)
+        {
+            energySource = "solar";
+            Debug.Log("This agent has changed energy sources due to low average lifespan.");
         }
     }
 
@@ -152,9 +184,12 @@ public class AgentManager : MonoBehaviour
     {
         // TODO: Factor in altruism
         // If their charisma score is higher than your trust score, follow their lead
-        if (agentScript.charisma > trust)
+        if (agentScript)
         {
-            energySource = agentScript.energySource;
+            if (agentScript.charisma > trust)
+            {
+                energySource = agentScript.energySource;
+            }
         }
     }
 
@@ -166,21 +201,34 @@ public class AgentManager : MonoBehaviour
         // Check to make sure food can still be gained, if it can't then don't add any food
         if (simScript.totalFood > 0f)
         {
-            float foodGained = simScript.solarFoodValue + Random.Range(-0.05f, 0.05f); // Small amount of randomness, sometimes the agents find and eat more/less food
+            float foodGained = simScript.solarFoodValue + Random.Range(-0.2f, 0.2f); // Small amount of randomness, sometimes the agents find and eat more/less food
 
             if (energySource == "solar")
             {
                 // Heal pollution and lifespan
-                simScript.pollution -= simScript.fossilFuelPollutionPenalty;
-                simScript.averageLifespan += simScript.fossilFuelLifePenalty;
+                if (simScript.pollution > 0f)
+                {
+                    simScript.pollution -= simScript.fossilFuelPollutionPenalty/2;
+                }
+                if (simScript.averageLifespan < 200f)
+                {
+                    simScript.averageLifespan += simScript.fossilFuelLifePenalty;
+                }
             }
 
             else if (energySource == "fossilFuels")
             {
                 // Agent gets more food, but the environment and lifespan suffer
                 foodGained += simScript.fossilFuelFoodBonus;
-                simScript.pollution += simScript.fossilFuelPollutionPenalty;
-                simScript.averageLifespan -= simScript.fossilFuelLifePenalty;
+                if (simScript.pollution < 100f)
+                {
+                    simScript.pollution += simScript.fossilFuelPollutionPenalty;
+                }
+
+                if (simScript.averageLifespan > 0)
+                {
+                    simScript.averageLifespan -= simScript.fossilFuelLifePenalty;
+                }
             }
 
             foodQuantity += foodGained;
@@ -196,7 +244,7 @@ public class AgentManager : MonoBehaviour
         // Check if there's food to eat
         if (foodQuantity > 0f)
         {
-            foodQuantity -= Random.Range(0.05f, 0.2f); // Eat a variable amount of food
+            foodQuantity -= simScript.solarFoodValue - Random.Range(0f, simScript.solarFoodValue/2); // Eat a variable amount of food
         }
     }
 
