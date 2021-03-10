@@ -88,7 +88,7 @@ public class SimManager : MonoBehaviour
     /// </summary>
     private void UpdateSettings()
     {
-        //foodProduction = FoodProductionRateSliderUI.value;
+        foodProduction = FoodProductionRateSliderUI.value;
         solarFoodValue = SolarFoodValueSliderUI.value;
         fossilFuelFoodBonus = FossilFuelFoodBonusSliderUI.value;
         fossilFuelAverageLifePenalty = FossilFuelAverageLifePenaltySliderUI.value;
@@ -101,8 +101,8 @@ public class SimManager : MonoBehaviour
     /// </summary>
     private void InitializeUI()
     {
-        //FoodProductionRateSliderUI.maxValue = 1000f;
-        //FoodProductionRateSliderUI.value = 1000f;
+        FoodProductionRateSliderUI.maxValue = 2f;
+        FoodProductionRateSliderUI.value = 1.5f;
         SolarFoodValueSliderUI.maxValue = 1f;
         SolarFoodValueSliderUI.value = 0.5f;
         FossilFuelFoodBonusSliderUI.maxValue = 1f;
@@ -149,7 +149,7 @@ public class SimManager : MonoBehaviour
         foreach (AgentManager element in agents)
         {
             // The more pollution there is, the more it affects an agent's health (lifespan)
-            element.ChangeLifespan(-((pollution/foodProduction) / 100)); // An agent's lifespan decreases as the world is further polluted
+            element.ChangeLifespan(-((pollution/(FoodProductionRateSliderUI.value * agents.Count)) / 100)); // An agent's lifespan decreases as the world is further polluted
             tempAverageLifespan += element.lifespan;
         }
 
@@ -157,7 +157,7 @@ public class SimManager : MonoBehaviour
         averageLifespan = tempAverageLifespan / agents.Count;
 
         // Add food to the world, the higher pollution the less food added
-        foodProduction = agents.Count * 2f; // Food production is dependent on the number of agents so that it grows with population
+        foodProduction = agents.Count * FoodProductionRateSliderUI.value; // Food production is dependent on the number of agents so that it grows with population
         totalFood += Math.Max(0, (foodProduction - pollution)); 
     }
 
