@@ -866,9 +866,9 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 11.419874
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 100
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2476,22 +2476,21 @@ MonoBehaviour:
   fossilFuelFoodBonus: 0.01
   fossilFuelPollutionPenalty: 0.01
   averageLifespan: 100
+  pollutionPercentage: 0
+  fossilFuelsColor: {r: 0.4005426, g: 0.046724807, b: 0.6603774, a: 1}
+  renewablesColor: {r: 0.18160377, g: 0.7264151, b: 0.20439795, a: 1}
   agents: []
   agent: {fileID: 7883449546743349837, guid: 30df8500786dfc1408b89ea1a79b686e, type: 3}
   AgentTemplate: {fileID: 7883449546743349842, guid: 30df8500786dfc1408b89ea1a79b686e,
     type: 3}
   FoodProductionRateTextUI: {fileID: 522260895}
   FoodProductionRateSliderUI: {fileID: 534669772}
-  FoodProductionRateInputFieldUI: {fileID: 0}
   SolarFoodValueTextUI: {fileID: 2013484118}
   SolarFoodValueSliderUI: {fileID: 1613987255}
-  SolarFoodValueInputFieldUI: {fileID: 0}
   FossilFuelFoodBonusTextUI: {fileID: 1844391542}
   FossilFuelFoodBonusSliderUI: {fileID: 851960128}
-  FossilFuelFoodBonusInputFieldUI: {fileID: 0}
   FossilFuelPollutionPenaltyTextUI: {fileID: 1315949761}
   FossilFuelPollutionPenaltySliderUI: {fileID: 37511238}
-  FossilFuelPollutionPenaltyInputFieldUI: {fileID: 0}
 --- !u!4 &1502215521
 Transform:
   m_ObjectHideFlags: 0
