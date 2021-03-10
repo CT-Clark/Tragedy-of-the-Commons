@@ -18,10 +18,10 @@ public class SimManager : MonoBehaviour
 
     // Private fields
     private int numberOfAgents = 100;
-    public int agentCount = 0;
-    
+    private float tempAverageLifespan;
 
     // Public fields
+    public int agentCount = 0;
     public float foodProduction;
     public float totalFood = 1000000f; // Total amount of food the world starts with
     public float pollution;
@@ -29,7 +29,7 @@ public class SimManager : MonoBehaviour
     public float fossilFuelFoodBonus; // The bonus using fossil fuels to collect food
     public float fossilFuelPollutionPenalty; // How much pollution to add when fossil fuels used
     public float averageLifespan;
-    private float tempAverageLifespan;
+    public float pollutionPercentage;
 
     public List<AgentManager> agents = new List<AgentManager>();
     public AgentManager agent; // An object to hold an instance of an agent
@@ -41,19 +41,15 @@ public class SimManager : MonoBehaviour
 
     public Text FoodProductionRateTextUI;
     public Slider FoodProductionRateSliderUI;
-    public GameObject FoodProductionRateInputFieldUI;
 
     public Text SolarFoodValueTextUI;
     public Slider SolarFoodValueSliderUI;
-    public GameObject SolarFoodValueInputFieldUI;
 
     public Text FossilFuelFoodBonusTextUI;
     public Slider FossilFuelFoodBonusSliderUI;
-    public GameObject FossilFuelFoodBonusInputFieldUI;
 
     public Text FossilFuelPollutionPenaltyTextUI;
     public Slider FossilFuelPollutionPenaltySliderUI;
-    public GameObject FossilFuelPollutionPenaltyInputFieldUI;
 
     /// <summary>
     /// Display the current settings.
@@ -115,7 +111,7 @@ public class SimManager : MonoBehaviour
     // FixedUpdate is used for changing the simulation state 
     void FixedUpdate()
     {
-        
+        pollutionPercentage = pollution / foodProduction * 100;
     }
 
     // LateUpdate is called after FixedUpdate and is used to modify things after agents have acted
