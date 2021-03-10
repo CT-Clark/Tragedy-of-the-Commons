@@ -118,11 +118,14 @@ public class SimManager : MonoBehaviour
     void LateUpdate()
     {
         tempAverageLifespan = 0;
+
+        foodProduction = agents.Count * FoodProductionRateSliderUI.value; // Food production is dependent on the number of agents so that it grows with population
+
         // Change the agents based on the world state
         foreach (AgentManager element in agents)
         {
             // The more pollution there is, the more it affects an agent's health (lifespan)
-            element.ChangeLifespan(-((pollution/(FoodProductionRateSliderUI.value * agents.Count)) / 100)); // An agent's lifespan decreases as the world is further polluted
+            element.ChangeLifespan(-pollutionPercentage / 10000); // An agent's lifespan decreases as the world is further polluted
             tempAverageLifespan += element.lifespan;
         }
 
@@ -130,7 +133,6 @@ public class SimManager : MonoBehaviour
         averageLifespan = tempAverageLifespan / agents.Count;
 
         // Add food to the world, the higher pollution the less food added
-        foodProduction = agents.Count * FoodProductionRateSliderUI.value; // Food production is dependent on the number of agents so that it grows with population
         totalFood += Math.Max(0, (foodProduction - pollution)); 
     }
 
