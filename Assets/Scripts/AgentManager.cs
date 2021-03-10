@@ -194,6 +194,7 @@ public class AgentManager : MonoBehaviour
             energySource = "solar"; 
         }
         // Otherwise use fossil fuels (The agent believes everything is okay in the world and would prefer to collect more food) Possibly change
+        /*
         else
         {
             if (energySource == "solar")
@@ -202,6 +203,7 @@ public class AgentManager : MonoBehaviour
             }
             energySource = "fossilFuels";
         }
+        */
     }
 
     /// <summary>
@@ -256,15 +258,11 @@ public class AgentManager : MonoBehaviour
 
     /// <summary>
     /// This method subtracts food from the agents pool of food so that they may live.
+    /// Eat a variable amount of food, the maximum amount of food needed to eat is equal to the average amount produced by solar
     /// </summary>
     public void EatFood()
     {
-        // Check if there's food to eat
-        if (foodQuantity > 0f)
-        {
-            // Eat a variable amount of food, the maximum amount of food needed to eat is equal to the average amount produced by solar
-            foodQuantity -= simScript.solarFoodValue - UnityEngine.Random.Range(0f, simScript.solarFoodValue / 2); 
-        }
+        foodQuantity -= simScript.solarFoodValue - UnityEngine.Random.Range(0f, simScript.solarFoodValue / 2); 
     }
 
     #endregion Methods
