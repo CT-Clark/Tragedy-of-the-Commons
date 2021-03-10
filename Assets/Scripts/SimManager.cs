@@ -8,6 +8,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SimManager : MonoBehaviour
 {
@@ -31,9 +32,62 @@ public class SimManager : MonoBehaviour
 
     public List<AgentManager> agents = new List<AgentManager>();
     public AgentManager agent; // An object to hold an instance of an agent
-    public GameObject AgentTemplate; 
+    public GameObject AgentTemplate;
 
     #endregion
+
+    #region UI
+
+    public Text FoodProductionRateTextUI;
+    public Slider FoodProductionRateSliderUI;
+
+    public Text SolarFoodValueTextUI;
+    public Slider SolarFoodValueSliderUI;
+
+    public Text FossilFuelFoodBonusTextUI;
+    public Slider FossilFuelFoodBonusSliderUI;
+
+    public Text FossilFuelAverageLifePenaltyTextUI;
+    public Slider FossilFuelAverageLifePenaltySliderUI;
+
+    public Text FossilFuelPollutionPenaltyTextUI;
+    public Slider FossilFuelPollutionPenaltySliderUI;
+
+    public Text FossilFuelLifePenaltyTextUI;
+    public Slider FossilFuelLifePenaltySliderUI;
+
+    public Text AverageLifespanTextUI;
+    public Slider AverageLifespanSliderUI;
+
+    /// <summary>
+    /// Display the current general settings.
+    /// </summary>
+    private void DisplaySettings()
+    {
+        FoodProductionRateTextUI.text = string.Format("Food Production Rate ({0:0.00})", foodProduction);
+        SolarFoodValueTextUI.text = string.Format("Solar Food Value ({0:0.00})", solarFoodValue);
+        FossilFuelFoodBonusTextUI.text = string.Format("Fossil Fuel Food Bonus ({0:0.00})", fossilFuelFoodBonus);
+        FossilFuelAverageLifePenaltyTextUI.text = string.Format("Fossil Fuel Average Life Penalty ({0:0.00})", fossilFuelAverageLifePenalty);
+        FossilFuelPollutionPenaltyTextUI.text = string.Format("Fossil Fuel Pollution Penalty ({0:0.00})", fossilFuelPollutionPenalty);
+        FossilFuelLifePenaltyTextUI.text = string.Format("Fossil Fuel Life penalty ({0:0.00})", fossilFuelLifePenalty);
+        AverageLifespanTextUI.text = string.Format("Average Lifespan ({0:0.00})", averageLifespan);
+    }
+
+    /// <summary>
+    /// Updates the general settings.
+    /// </summary>
+    private void UpdateSettings()
+    {
+        foodProduction = FoodProductionRateSliderUI.value;
+        solarFoodValue = SolarFoodValueSliderUI.value;
+        fossilFuelFoodBonus = FossilFuelFoodBonusSliderUI.value;
+        fossilFuelAverageLifePenalty = FossilFuelAverageLifePenaltySliderUI.value;
+        fossilFuelPollutionPenalty = FossilFuelPollutionPenaltySliderUI.value;
+        fossilFuelLifePenalty = FossilFuelLifePenaltySliderUI.value;
+        averageLifespan = AverageLifespanSliderUI.value;
+    }
+
+    #endregion UI
 
     #region BuiltInMethods
 
@@ -46,7 +100,8 @@ public class SimManager : MonoBehaviour
     // Update is called once per frame, used for graphics
     void Update()
     {
-        
+        UpdateSettings();
+        DisplaySettings();
     }
 
     // FixedUpdate is used for changing the simulation state 
@@ -102,4 +157,6 @@ public class SimManager : MonoBehaviour
     }
 
     #endregion Methods
+
+    
 }
