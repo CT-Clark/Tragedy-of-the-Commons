@@ -55,7 +55,7 @@ public class AgentManager : MonoBehaviour
             foresight = Math.Max(0, parentScript.foresight + UnityEngine.Random.Range(-10f, 10f));
             generation = parentScript.generation++;
             energySource = parentScript.energySource; // Kids are more likely to follow their parents' lead, so use the same energy source
-            lifespan = Math.Max(0, ((parentScript.lifespan + UnityEngine.Random.Range(-10f, 10f)) + simScript.averageLifespan) / 2);
+            lifespan = Math.Max(0, ((parentScript.lifespan + UnityEngine.Random.Range(0f, 10f)) + simScript.averageLifespan) / 2);
             foodToBreed = Math.Max(25, parentScript.foodToBreed + UnityEngine.Random.Range(-5f, 5f));
         }
         else // Agent is first generation
@@ -118,11 +118,14 @@ public class AgentManager : MonoBehaviour
     /// <summary>
     /// This methods checks if an agent is capable of spawning a child.
     /// If it is, then it spawns a child.
-    /// The agent must be at least 20 units old, have enough food, and is not concerned about the state of the world's pollution
+    /// The agent must be at least 20 units old, have enough food, and is not concerned about the state of the world's pollution or total food amount
     /// </summary>
     private void CheckSpawn()
     {
-        if (foodQuantity >= foodToBreed + 10f && age > 20f && (simScript.pollution / simScript.foodProduction) * 100 > 100 - foresight)
+        if (foodQuantity >= foodToBreed + 10f 
+            && age > 20f 
+            && (simScript.pollution / simScript.foodProduction) * 100 > 100 - foresight 
+            && simScript.totalFood > simScript.agents.Count * foresight * 10)
         {
             foodQuantity -= foodToBreed; // Breeding uses food, that food is given to the spawned child
             GameObject agent = GameObject.Instantiate(AgentTemplate);
