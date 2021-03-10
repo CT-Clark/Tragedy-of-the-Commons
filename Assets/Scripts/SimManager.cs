@@ -27,11 +27,9 @@ public class SimManager : MonoBehaviour
     public float pollution;
     public float solarFoodValue; // The amount of food an agent using solar collects
     public float fossilFuelFoodBonus; // The bonus using fossil fuels to collect food
-    public float fossilFuelAverageLifePenalty; // The penalty using fossil fuels applies to global lifespan expectation
     public float fossilFuelPollutionPenalty; // How much pollution to add when fossil fuels used
-    public float fossilFuelLifePenalty;
     public float averageLifespan;
-    public float tempAverageLifespan;
+    private float tempAverageLifespan;
 
     public List<AgentManager> agents = new List<AgentManager>();
     public AgentManager agent; // An object to hold an instance of an agent
@@ -53,21 +51,9 @@ public class SimManager : MonoBehaviour
     public Slider FossilFuelFoodBonusSliderUI;
     public GameObject FossilFuelFoodBonusInputFieldUI;
 
-    public Text FossilFuelAverageLifePenaltyTextUI;
-    public Slider FossilFuelAverageLifePenaltySliderUI;
-    public GameObject FossilFuelAverageLifePenaltyInputFieldUI;
-
     public Text FossilFuelPollutionPenaltyTextUI;
     public Slider FossilFuelPollutionPenaltySliderUI;
     public GameObject FossilFuelPollutionPenaltyInputFieldUI;
-
-    public Text FossilFuelLifePenaltyTextUI;
-    public Slider FossilFuelLifePenaltySliderUI;
-    public GameObject FossilFuelLifePenaltyInputFieldUI;
-
-    public Text AverageLifespanTextUI;
-    public Slider AverageLifespanSliderUI;
-    public GameObject AverageLifespanInputFieldUI;
 
     /// <summary>
     /// Display the current settings.
@@ -77,10 +63,7 @@ public class SimManager : MonoBehaviour
         FoodProductionRateTextUI.text = string.Format("Food Production Rate ({0:0.00})", foodProduction);
         SolarFoodValueTextUI.text = string.Format("Solar Food Value ({0:0.00})", solarFoodValue);
         FossilFuelFoodBonusTextUI.text = string.Format("Fossil Fuel Food Bonus ({0:0.00})", fossilFuelFoodBonus);
-        FossilFuelAverageLifePenaltyTextUI.text = string.Format("Fossil Fuel Average Life Penalty ({0:0.00})", fossilFuelAverageLifePenalty);
         FossilFuelPollutionPenaltyTextUI.text = string.Format("Fossil Fuel Pollution Penalty ({0:0.00})", fossilFuelPollutionPenalty);
-        FossilFuelLifePenaltyTextUI.text = string.Format("Fossil Fuel Life penalty ({0:0.00})", fossilFuelLifePenalty);
-        AverageLifespanTextUI.text = string.Format("Average Lifespan ({0:0.00})", averageLifespan);
     }
 
     /// <summary>
@@ -91,9 +74,7 @@ public class SimManager : MonoBehaviour
         foodProduction = FoodProductionRateSliderUI.value;
         solarFoodValue = SolarFoodValueSliderUI.value;
         fossilFuelFoodBonus = FossilFuelFoodBonusSliderUI.value;
-        fossilFuelAverageLifePenalty = FossilFuelAverageLifePenaltySliderUI.value;
         fossilFuelPollutionPenalty = FossilFuelPollutionPenaltySliderUI.value;
-        fossilFuelLifePenalty = FossilFuelLifePenaltySliderUI.value;
     }
 
     /// <summary>
@@ -105,14 +86,10 @@ public class SimManager : MonoBehaviour
         FoodProductionRateSliderUI.value = 1.5f;
         SolarFoodValueSliderUI.maxValue = 1f;
         SolarFoodValueSliderUI.value = 0.5f;
-        FossilFuelFoodBonusSliderUI.maxValue = 1f;
+        FossilFuelFoodBonusSliderUI.maxValue = 0.5f;
         FossilFuelFoodBonusSliderUI.value = 0.05f;
-        FossilFuelAverageLifePenaltySliderUI.maxValue = 0.50f;
-        FossilFuelAverageLifePenaltySliderUI.value = 0.001f;
-        FossilFuelPollutionPenaltySliderUI.maxValue = 0.5f;
+        FossilFuelPollutionPenaltySliderUI.maxValue = 0.01f;
         FossilFuelPollutionPenaltySliderUI.value = 0.005f;
-        FossilFuelLifePenaltySliderUI.maxValue = 0.5f;
-        FossilFuelLifePenaltySliderUI.value = 0.001f;
     }
 
     #endregion UI
