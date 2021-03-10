@@ -165,10 +165,8 @@ public class AgentManager : MonoBehaviour
     /// </summary>
     public void CheckCalamity()
     {
-        // TODO: Factor in altruism
-
         // If pollution is too high and the agent is altruistic enough, change to solar
-        if ((simScript.pollution / simScript.foodProduction) * 100 > 100 - foresight && 100 - (simScript.pollution / simScript.foodProduction) * 100 < altruism && energySource != "solar") 
+        if ((simScript.pollution / simScript.foodProduction) * 100 > 100 - foresight && 100 - (simScript.pollution / simScript.foodProduction) * 100 < altruism) 
         {
             
             if (energySource != "solar")
@@ -190,6 +188,10 @@ public class AgentManager : MonoBehaviour
         // Otherwise use fossil fuels
         else
         {
+            if (energySource == "solar")
+            {
+                Debug.Log(gameObject.name + " has changed from solar to fossil fuels.");
+            }
             energySource = "fossilFuels";
         }
         
