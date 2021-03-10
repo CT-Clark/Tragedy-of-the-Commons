@@ -1491,7 +1491,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.4, g: 0.6, b: 0.8, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -5048,6 +5048,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agentCount: 0
+  screenBounds: {x: 0, y: 0}
   foodProduction: 1
   totalFood: 1000000
   pollution: 0
@@ -5057,6 +5058,7 @@ MonoBehaviour:
   fossilFuelPollutionPenalty: 0.01
   fossilFuelLifePenalty: 0.01
   averageLifespan: 100
+  tempAverageLifespan: 0
   agents: []
   agent: {fileID: 7883449546743349837, guid: 30df8500786dfc1408b89ea1a79b686e, type: 3}
   AgentTemplate: {fileID: 7883449546743349842, guid: 30df8500786dfc1408b89ea1a79b686e,

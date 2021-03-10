@@ -167,6 +167,11 @@ public class SimManager : MonoBehaviour
         foodProduction = agents.Count * 2f;
         totalFood += Math.Max(0, (foodProduction - pollution));
 
+        Color start = new Color(0.4f, 0.6f, 0.8f, 1);
+
+        // Update background to reflect severity of pollution
+        Camera.main.backgroundColor = Color.Lerp(start, Color.black, pollution / foodProduction);
+
     }
 
     #endregion BuiltInMethods
