@@ -108,6 +108,7 @@ public class AgentManager : MonoBehaviour
     /// <param name="amount"></param>
     public void ChangeLifespan(float amount)
     {
+        // Don't go into negative lifespan
         if (lifespan + amount > 0f)
         {
             lifespan += amount;
@@ -123,14 +124,14 @@ public class AgentManager : MonoBehaviour
     {
         if (foodQuantity >= foodToBreed + 10f && age > 20f && (simScript.pollution / simScript.foodProduction) * 100 > 100 - foresight)
         {
-            foodQuantity -= foodToBreed + UnityEngine.Random.Range(-9f, 9f); // Breeding uses food
+            foodQuantity -= foodToBreed; // Breeding uses food, that food is given to the spawned child
             GameObject agent = GameObject.Instantiate(AgentTemplate);
             AgentManager agentScript = agent.GetComponent<AgentManager>();
-            agentScript.parentScript = GetComponent<AgentManager>();
+            agentScript.parentScript = GetComponent<AgentManager>(); // Used to pass on traits
             agent.name = "Agent" + simScript.agentCount;
-            simScript.agents.Add(agentScript);
+            simScript.agents.Add(agentScript); // Add to the world agent list
 
-            // Change the player's location
+            // Change the agent's location
             float spawnX = transform.position.x + UnityEngine.Random.Range(-10f, 10f);
             float spawnY = transform.position.y + UnityEngine.Random.Range(-10f, 10f);
             agent.transform.position = new Vector2(spawnX, spawnY);
@@ -165,10 +166,17 @@ public class AgentManager : MonoBehaviour
     /// </summary>
     public void CheckCalamity()
     {
-        // If pollution is too high and the agent is altruistic enough, change to solar
+        // TODO: This will need to be changed for collisions, after being convinced to change are agents able to switch their energy source on their own?
+        // Would this overwrite the collision result?
+        // If I've been convinced to change to fossil fuels but I also have sufficient foresight and altruism, should I change back to solar? 
+        // Ignore my own values for the rest of my life?
+
+
+
+        // If pollution is too high and the agent is altruistic enough, change to (or continue to use) solar
         if ((simScript.pollution / simScript.foodProduction) * 100 > 100 - foresight && 100 - (simScript.pollution / simScript.foodProduction) * 100 < altruism) 
         {
-            
+            // If energy source was previously fossil fuels print this to log
             if (energySource != "solar")
             {
                 Debug.Log(gameObject.name + " has changed their energy source due to high levels of pollution affecting food growth rates.");
@@ -176,7 +184,7 @@ public class AgentManager : MonoBehaviour
             }
             energySource = "solar";
         }
-        // If average lifespan is too low and the agent is altruistic enough, change to solar
+        // If average lifespan is too low and the agent is altruistic enough, change to (or continue to use) solar
         else if (simScript.averageLifespan < foresight && simScript.averageLifespan < altruism)
         {
             if (energySource != "solar")
@@ -185,7 +193,7 @@ public class AgentManager : MonoBehaviour
             }
             energySource = "solar"; 
         }
-        // Otherwise use fossil fuels
+        // Otherwise use fossil fuels (The agent believes everything is okay in the world and would prefer to collect more food) Possibly change
         else
         {
             if (energySource == "solar")
@@ -194,7 +202,6 @@ public class AgentManager : MonoBehaviour
             }
             energySource = "fossilFuels";
         }
-        
     }
 
     /// <summary>
@@ -221,7 +228,7 @@ public class AgentManager : MonoBehaviour
         // Check to make sure food can still be gained, if it can't then don't add any food
         if (simScript.totalFood > 0f)
         {
-            float foodGained = simScript.solarFoodValue + UnityEngine.Random.Range(-simScript.solarFoodValue/2, simScript.solarFoodValue/2); // Small amount of UnityEngine.Randomness, sometimes the agents find and eat more/less food
+            float foodGained = simScript.solarFoodValue + UnityEngine.Random.Range(-simScript.solarFoodValue/2, simScript.solarFoodValue/2); // Small amount of randomness, sometimes the agents find and eat more/less food
 
             if (energySource == "solar")
             {
