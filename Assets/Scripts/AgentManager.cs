@@ -3,6 +3,7 @@
  * This script manages the agents' state for the Tragedy of the Commons (TofC) simulation written for CPSC565.
  */
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,7 +25,6 @@ public class AgentManager : MonoBehaviour
     public string energySource; // Either "solar" or "fossilFuels"
     public int generation;
     public float lifespan; // When this agent will die due to time
-    public bool switchable;
 
     public SimManager simScript; // A reference to the world state
     public AgentManager agentScript; // A reference to another agent (used for collisions)
@@ -38,17 +38,9 @@ public class AgentManager : MonoBehaviour
     // Awake is called when this agent is instantiated, used to assign traits
     void Awake()
     {
-        // TODO: Get SimManager simScript
-        switchable = true;
-
         simScript = GameObject.Find("SimManager").GetComponent<SimManager>();
 
         age = 0;
-        foodQuantity = 50f;
-        //if (Random.Range(0f, 100f) < 10f)
-        //{
-        //    switchable = false;
-        //}
     }
 
     // Start is called before the first frame update
@@ -56,34 +48,38 @@ public class AgentManager : MonoBehaviour
     {
         if (parentScript) // If this agent has a parent then inherit a lot of traits from them
         {
-            altruism = parentScript.altruism + Random.Range(-10f, 10f);
-            charisma = parentScript.charisma + Random.Range(-10f, 10f);
-            trust = parentScript.trust + Random.Range(-10f, 10f);
-            foresight = parentScript.foresight + Random.Range(-10f, 10f);
+            foodQuantity = parentScript.foodToBreed;
+            altruism = Math.Max(0, parentScript.altruism + UnityEngine.Random.Range(-10f, 10f));
+            charisma = Math.Max(0, parentScript.charisma + UnityEngine.Random.Range(-10f, 10f));
+            trust = Math.Max(0, parentScript.trust + UnityEngine.Random.Range(-10f, 10f));
+            foresight = Math.Max(0, parentScript.foresight + UnityEngine.Random.Range(-10f, 10f));
             generation = parentScript.generation++;
             energySource = parentScript.energySource; // Kids are more likely to follow their parents' lead, so use the same energy source
-            lifespan = parentScript.lifespan + Random.Range(-5f, 5f);
+            lifespan = Math.Max(0, ((parentScript.lifespan + UnityEngine.Random.Range(-10f, 10f)) + simScript.averageLifespan) / 2);
+            foodToBreed = Math.Max(25, parentScript.foodToBreed + UnityEngine.Random.Range(-5f, 5f));
         }
         else // Agent is first generation
         {
-            altruism = Random.Range(0f, 100f);
-            charisma = Random.Range(0f, 100f);
-            trust = Random.Range(0f, 100f);
-            foresight = Random.Range(0f, 100f);
+            foodQuantity = 10f;
+            altruism = UnityEngine.Random.Range(0f, 100f);
+            charisma = UnityEngine.Random.Range(0f, 100f);
+            trust = UnityEngine.Random.Range(0f, 100f);
+            foresight = UnityEngine.Random.Range(0f, 100f);
             generation = 0;
             energySource = "fossilFuels";
 
-            lifespan = simScript.averageLifespan + Random.Range(-10f, 10f);
-            Debug.Log(lifespan);
-            foodToBreed = 50f;
+            lifespan = simScript.averageLifespan + UnityEngine.Random.Range(-10f, 10f);
+            foodToBreed = 80f + UnityEngine.Random.Range(-20f, 20f);
         }
     }
 
+    /*
     // Update is called once per frame
     void Update()
     {
         
     }
+    */
 
     // FixedUpdate is used for changing the simulation state 
     void FixedUpdate()
@@ -112,18 +108,22 @@ public class AgentManager : MonoBehaviour
     /// <param name="amount"></param>
     public void ChangeLifespan(float amount)
     {
-        lifespan += amount;
+        if (lifespan + amount > 0f)
+        {
+            lifespan += amount;
+        }
     }
 
     /// <summary>
     /// This methods checks if an agent is capable of spawning a child.
     /// If it is, then it spawns a child.
+    /// The agent must be at least 20 units old, have enough food, and is not concerned about the state of the world's pollution
     /// </summary>
     private void CheckSpawn()
     {
-        if (foodQuantity >= foodToBreed + 10f && age > 20f)
+        if (foodQuantity >= foodToBreed + 10f && age > 20f && (simScript.pollution / simScript.foodProduction) * 100 > 100 - foresight)
         {
-            foodQuantity -= foodToBreed; // Breeding uses food
+            foodQuantity -= foodToBreed + UnityEngine.Random.Range(-9f, 9f); // Breeding uses food
             GameObject agent = GameObject.Instantiate(AgentTemplate);
             AgentManager agentScript = agent.GetComponent<AgentManager>();
             agentScript.parentScript = GetComponent<AgentManager>();
@@ -131,8 +131,8 @@ public class AgentManager : MonoBehaviour
             simScript.agents.Add(agentScript);
 
             // Change the player's location
-            float spawnX = transform.position.x + Random.Range(-10f, 10f);
-            float spawnY = transform.position.y + Random.Range(-10f, 10f);
+            float spawnX = transform.position.x + UnityEngine.Random.Range(-10f, 10f);
+            float spawnY = transform.position.y + UnityEngine.Random.Range(-10f, 10f);
             agent.transform.position = new Vector2(spawnX, spawnY);
             simScript.agentCount++;
 
@@ -148,12 +148,14 @@ public class AgentManager : MonoBehaviour
         // Check if the agent starves or dies from old age
         if (foodQuantity <= 0)
         {
-            Debug.Log("This agent has died from lack of food.");
+            Debug.Log(gameObject.name + " has died from lack of food.");
+            simScript.agents.Remove(GetComponent<AgentManager>());
             Destroy(gameObject);
         }
         if (age >= lifespan)
         {
-            Debug.Log("This agent has died from old age.");
+            Debug.Log(gameObject.name + " has died from old age.");
+            simScript.agents.Remove(GetComponent<AgentManager>());
             Destroy(gameObject);
         }
     }
@@ -164,17 +166,33 @@ public class AgentManager : MonoBehaviour
     public void CheckCalamity()
     {
         // TODO: Factor in altruism
-        if ((simScript.foodProduction - simScript.pollution) < foresight && energySource != "solar" && switchable) 
+
+        // If pollution is too high and the agent is altruistic enough, change to solar
+        if ((simScript.pollution / simScript.foodProduction) * 100 > 100 - foresight && 100 - (simScript.pollution / simScript.foodProduction) * 100 < altruism && energySource != "solar") 
         {
+            
+            if (energySource != "solar")
+            {
+                Debug.Log(gameObject.name + " has changed their energy source due to high levels of pollution affecting food growth rates.");
+                Debug.Log(gameObject.name + "'s foresight: " + foresight + ", altruism: " + altruism + " | Pollution percentage: " + ((simScript.pollution / simScript.foodProduction) * 100) + "%");
+            }
             energySource = "solar";
-            Debug.Log("This agent has changed their energy source due to lack of food production");
-            Debug.Log(simScript.foodProduction + " " + simScript.pollution);
         }
-        if (simScript.averageLifespan < foresight && energySource != "solar" && switchable)
+        // If average lifespan is too low and the agent is altruistic enough, change to solar
+        else if (simScript.averageLifespan < foresight && simScript.averageLifespan < altruism)
         {
-            energySource = "solar";
-            Debug.Log("This agent has changed energy sources due to low average lifespan.");
+            if (energySource != "solar")
+            {
+                Debug.Log(gameObject.name + " has changed energy sources due to low average lifespan.");
+            }
+            energySource = "solar"; 
         }
+        // Otherwise use fossil fuels
+        else
+        {
+            energySource = "fossilFuels";
+        }
+        
     }
 
     /// <summary>
@@ -201,7 +219,7 @@ public class AgentManager : MonoBehaviour
         // Check to make sure food can still be gained, if it can't then don't add any food
         if (simScript.totalFood > 0f)
         {
-            float foodGained = simScript.solarFoodValue + Random.Range(-0.2f, 0.2f); // Small amount of randomness, sometimes the agents find and eat more/less food
+            float foodGained = simScript.solarFoodValue + UnityEngine.Random.Range(-simScript.solarFoodValue/2, simScript.solarFoodValue/2); // Small amount of UnityEngine.Randomness, sometimes the agents find and eat more/less food
 
             if (energySource == "solar")
             {
@@ -212,7 +230,7 @@ public class AgentManager : MonoBehaviour
                 }
                 if (simScript.averageLifespan < 200f)
                 {
-                    simScript.averageLifespan += simScript.fossilFuelLifePenalty;
+                    simScript.averageLifespan += simScript.fossilFuelAverageLifePenalty/2;
                 }
             }
 
@@ -220,14 +238,9 @@ public class AgentManager : MonoBehaviour
             {
                 // Agent gets more food, but the environment and lifespan suffer
                 foodGained += simScript.fossilFuelFoodBonus;
-                if (simScript.pollution < 100f)
+                if (simScript.pollution + simScript.fossilFuelPollutionPenalty <= simScript.foodProduction)
                 {
                     simScript.pollution += simScript.fossilFuelPollutionPenalty;
-                }
-
-                if (simScript.averageLifespan > 0)
-                {
-                    simScript.averageLifespan -= simScript.fossilFuelLifePenalty;
                 }
             }
 
@@ -244,7 +257,7 @@ public class AgentManager : MonoBehaviour
         // Check if there's food to eat
         if (foodQuantity > 0f)
         {
-            foodQuantity -= simScript.solarFoodValue - Random.Range(0f, simScript.solarFoodValue/2); // Eat a variable amount of food
+            foodQuantity -= simScript.solarFoodValue - UnityEngine.Random.Range(0f, simScript.solarFoodValue / 2); // Eat a variable amount of food
         }
     }
 

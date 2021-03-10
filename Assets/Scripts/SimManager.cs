@@ -5,6 +5,7 @@
  * TODO: The bonuses, penalties, etc need to be callibrated
  */
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,13 +24,14 @@ public class SimManager : MonoBehaviour
     // Public fields
     public float foodProduction;
     public float totalFood = 1000000f; // Total amount of food the world starts with
-    public float pollution = 0f;
+    public float pollution;
     public float solarFoodValue; // The amount of food an agent using solar collects
     public float fossilFuelFoodBonus; // The bonus using fossil fuels to collect food
     public float fossilFuelAverageLifePenalty; // The penalty using fossil fuels applies to global lifespan expectation
     public float fossilFuelPollutionPenalty; // How much pollution to add when fossil fuels used
     public float fossilFuelLifePenalty;
     public float averageLifespan;
+    public float tempAverageLifespan;
 
     public List<AgentManager> agents = new List<AgentManager>();
     public AgentManager agent; // An object to hold an instance of an agent
@@ -86,7 +88,7 @@ public class SimManager : MonoBehaviour
     /// </summary>
     private void UpdateSettings()
     {
-        foodProduction = FoodProductionRateSliderUI.value;
+        //foodProduction = FoodProductionRateSliderUI.value;
         solarFoodValue = SolarFoodValueSliderUI.value;
         fossilFuelFoodBonus = FossilFuelFoodBonusSliderUI.value;
         fossilFuelAverageLifePenalty = FossilFuelAverageLifePenaltySliderUI.value;
@@ -99,14 +101,14 @@ public class SimManager : MonoBehaviour
     /// </summary>
     private void InitializeUI()
     {
-        FoodProductionRateSliderUI.maxValue = 100f;
-        FoodProductionRateSliderUI.value = 100f;
+        //FoodProductionRateSliderUI.maxValue = 1000f;
+        //FoodProductionRateSliderUI.value = 1000f;
         SolarFoodValueSliderUI.maxValue = 1f;
         SolarFoodValueSliderUI.value = 0.5f;
         FossilFuelFoodBonusSliderUI.maxValue = 1f;
-        FossilFuelFoodBonusSliderUI.value = 0.1f;
+        FossilFuelFoodBonusSliderUI.value = 0.05f;
         FossilFuelAverageLifePenaltySliderUI.maxValue = 0.50f;
-        FossilFuelAverageLifePenaltySliderUI.value = 0.1f;
+        FossilFuelAverageLifePenaltySliderUI.value = 0.001f;
         FossilFuelPollutionPenaltySliderUI.maxValue = 0.5f;
         FossilFuelPollutionPenaltySliderUI.value = 0.005f;
         FossilFuelLifePenaltySliderUI.maxValue = 0.5f;
@@ -123,6 +125,7 @@ public class SimManager : MonoBehaviour
         PopulateAgents();
         InitializeUI();
         UpdateSettings();
+        pollution = FoodProductionRateSliderUI.value / 100;
     }
 
     // Update is called once per frame, used for graphics
@@ -141,15 +144,21 @@ public class SimManager : MonoBehaviour
     // LateUpdate is called after FixedUpdate and is used to modify things after agents have acted
     void LateUpdate()
     {
+        tempAverageLifespan = 0;
         // Change the agents based on the world state
         foreach (AgentManager element in agents)
         {
             // The more pollution there is, the more it affects an agent's health (lifespan)
-            element.ChangeLifespan(fossilFuelLifePenalty);
+            element.ChangeLifespan(-(pollution/foodProduction / 100)); // An agent's lifespan decreases as the world is further polluted
+            tempAverageLifespan += element.lifespan;
         }
+        averageLifespan = tempAverageLifespan / agents.Count;
 
         // Add food to the world, the higher pollution the less food added
-        totalFood += (foodProduction - pollution);
+        foodProduction = agents.Count * 2f;
+        totalFood += Math.Max(0, (foodProduction - pollution));
+
+        
     }
 
     #endregion BuiltInMethods
@@ -180,8 +189,8 @@ public class SimManager : MonoBehaviour
         agents.Add(agentScript);
 
         // Change the player's location
-        float spawnX = Random.Range(-100f, 100f);
-        float spawnY = Random.Range(-100f, 100f);
+        float spawnX = UnityEngine.Random.Range(-100f, 100f);
+        float spawnY = UnityEngine.Random.Range(-100f, 100f);
         agent.transform.position = new Vector2(spawnX, spawnY);
         agentCount++;
     }
