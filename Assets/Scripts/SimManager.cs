@@ -18,9 +18,12 @@ public class SimManager : MonoBehaviour
 
     // Private fields
     private int numberOfAgents = 100;
-    public int agentCount = 0;
+
+    private float tempAverageLifespan;
 
     // Public fields
+    public int agentCount = 0;
+    
     public Vector2 screenBounds;
 
     public float foodProduction;
@@ -28,11 +31,11 @@ public class SimManager : MonoBehaviour
     public float pollution;
     public float solarFoodValue; // The amount of food an agent using solar collects
     public float fossilFuelFoodBonus; // The bonus using fossil fuels to collect food
-    public float fossilFuelAverageLifePenalty; // The penalty using fossil fuels applies to global lifespan expectation
     public float fossilFuelPollutionPenalty; // How much pollution to add when fossil fuels used
-    public float fossilFuelLifePenalty;
     public float averageLifespan;
-    public float tempAverageLifespan;
+    public float pollutionPercentage;
+    public Color fossilFuelsColor; //color used for fossil fuel users
+    public Color renewablesColor; //color used for renewables users
 
     public List<AgentManager> agents = new List<AgentManager>();
     public AgentManager agent; // An object to hold an instance of an agent
@@ -44,31 +47,15 @@ public class SimManager : MonoBehaviour
 
     public Text FoodProductionRateTextUI;
     public Slider FoodProductionRateSliderUI;
-    public GameObject FoodProductionRateInputFieldUI;
 
     public Text SolarFoodValueTextUI;
     public Slider SolarFoodValueSliderUI;
-    public GameObject SolarFoodValueInputFieldUI;
 
     public Text FossilFuelFoodBonusTextUI;
     public Slider FossilFuelFoodBonusSliderUI;
-    public GameObject FossilFuelFoodBonusInputFieldUI;
-
-    public Text FossilFuelAverageLifePenaltyTextUI;
-    public Slider FossilFuelAverageLifePenaltySliderUI;
-    public GameObject FossilFuelAverageLifePenaltyInputFieldUI;
 
     public Text FossilFuelPollutionPenaltyTextUI;
     public Slider FossilFuelPollutionPenaltySliderUI;
-    public GameObject FossilFuelPollutionPenaltyInputFieldUI;
-
-    public Text FossilFuelLifePenaltyTextUI;
-    public Slider FossilFuelLifePenaltySliderUI;
-    public GameObject FossilFuelLifePenaltyInputFieldUI;
-
-    public Text AverageLifespanTextUI;
-    public Slider AverageLifespanSliderUI;
-    public GameObject AverageLifespanInputFieldUI;
 
     /// <summary>
     /// Display the current settings.
@@ -78,10 +65,7 @@ public class SimManager : MonoBehaviour
         FoodProductionRateTextUI.text = string.Format("Food Production Rate ({0:0.00})", foodProduction);
         SolarFoodValueTextUI.text = string.Format("Solar Food Value ({0:0.00})", solarFoodValue);
         FossilFuelFoodBonusTextUI.text = string.Format("Fossil Fuel Food Bonus ({0:0.00})", fossilFuelFoodBonus);
-        FossilFuelAverageLifePenaltyTextUI.text = string.Format("Fossil Fuel Average Life Penalty ({0:0.00})", fossilFuelAverageLifePenalty);
         FossilFuelPollutionPenaltyTextUI.text = string.Format("Fossil Fuel Pollution Penalty ({0:0.00})", fossilFuelPollutionPenalty);
-        FossilFuelLifePenaltyTextUI.text = string.Format("Fossil Fuel Life penalty ({0:0.00})", fossilFuelLifePenalty);
-        AverageLifespanTextUI.text = string.Format("Average Lifespan ({0:0.00})", averageLifespan);
     }
 
     /// <summary>
@@ -89,12 +73,10 @@ public class SimManager : MonoBehaviour
     /// </summary>
     private void UpdateSettings()
     {
-        //foodProduction = FoodProductionRateSliderUI.value;
+        foodProduction = FoodProductionRateSliderUI.value;
         solarFoodValue = SolarFoodValueSliderUI.value;
         fossilFuelFoodBonus = FossilFuelFoodBonusSliderUI.value;
-        fossilFuelAverageLifePenalty = FossilFuelAverageLifePenaltySliderUI.value;
         fossilFuelPollutionPenalty = FossilFuelPollutionPenaltySliderUI.value;
-        fossilFuelLifePenalty = FossilFuelLifePenaltySliderUI.value;
     }
 
     /// <summary>
@@ -102,18 +84,14 @@ public class SimManager : MonoBehaviour
     /// </summary>
     private void InitializeUI()
     {
-        //FoodProductionRateSliderUI.maxValue = 1000f;
-        //FoodProductionRateSliderUI.value = 1000f;
+        FoodProductionRateSliderUI.maxValue = 2f;
+        FoodProductionRateSliderUI.value = 1.5f;
         SolarFoodValueSliderUI.maxValue = 1f;
         SolarFoodValueSliderUI.value = 0.5f;
-        FossilFuelFoodBonusSliderUI.maxValue = 1f;
+        FossilFuelFoodBonusSliderUI.maxValue = 0.5f;
         FossilFuelFoodBonusSliderUI.value = 0.05f;
-        FossilFuelAverageLifePenaltySliderUI.maxValue = 0.50f;
-        FossilFuelAverageLifePenaltySliderUI.value = 0.001f;
-        FossilFuelPollutionPenaltySliderUI.maxValue = 0.5f;
+        FossilFuelPollutionPenaltySliderUI.maxValue = 0.01f;
         FossilFuelPollutionPenaltySliderUI.value = 0.005f;
-        FossilFuelLifePenaltySliderUI.maxValue = 0.5f;
-        FossilFuelLifePenaltySliderUI.value = 0.001f;
     }
 
     #endregion UI
@@ -128,7 +106,7 @@ public class SimManager : MonoBehaviour
         PopulateAgents();
         InitializeUI();
         UpdateSettings();
-        pollution = FoodProductionRateSliderUI.value / 100;
+        pollution = FoodProductionRateSliderUI.value / 100; // Start with a small amount of pollution
     }
 
     // Update is called once per frame, used for graphics
@@ -141,18 +119,21 @@ public class SimManager : MonoBehaviour
     // FixedUpdate is used for changing the simulation state 
     void FixedUpdate()
     {
-        
+        pollutionPercentage = pollution / foodProduction * 100;
     }
 
     // LateUpdate is called after FixedUpdate and is used to modify things after agents have acted
     void LateUpdate()
     {
         tempAverageLifespan = 0;
+
+        foodProduction = agents.Count * FoodProductionRateSliderUI.value; // Food production is dependent on the number of agents so that it grows with population
+
         // Change the agents based on the world state
         foreach (AgentManager element in agents)
         {
             // The more pollution there is, the more it affects an agent's health (lifespan)
-            element.ChangeLifespan(-(pollution/foodProduction / 100)); // An agent's lifespan decreases as the world is further polluted
+            element.ChangeLifespan(-pollutionPercentage / 10000); // An agent's lifespan decreases as the world is further polluted
             tempAverageLifespan += element.lifespan;
 
             //Keep position within boundaries
@@ -161,9 +142,12 @@ public class SimManager : MonoBehaviour
             viewPos.y = Mathf.Clamp(viewPos.y, screenBounds.y * -1, screenBounds.y);
             element.transform.position = viewPos;
         }
+
+        // Used for new agent creation
         averageLifespan = tempAverageLifespan / agents.Count;
 
         // Add food to the world, the higher pollution the less food added
+
         foodProduction = agents.Count * 2f;
         totalFood += Math.Max(0, (foodProduction - pollution));
 
