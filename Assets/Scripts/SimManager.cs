@@ -41,6 +41,10 @@ public class SimManager : MonoBehaviour
     public AgentManager agent; // An object to hold an instance of an agent
     public GameObject AgentTemplate;
 
+    //Colors showing pollution relative to food production
+    Color productiveCol = new Color(0.4f, 0.6f, 0.8f, 1);
+    Color pollutionCol = Color.black;
+
     #endregion
 
     #region UI
@@ -114,6 +118,9 @@ public class SimManager : MonoBehaviour
     {
         UpdateSettings();
         DisplaySettings();
+
+        // Update background to reflect severity of pollution
+        Camera.main.backgroundColor = Color.Lerp(productiveCol, pollutionCol, pollution / foodProduction);
     }
 
     // FixedUpdate is used for changing the simulation state 
@@ -150,11 +157,6 @@ public class SimManager : MonoBehaviour
 
         foodProduction = agents.Count * 2f;
         totalFood += Math.Max(0, (foodProduction - pollution));
-
-        Color start = new Color(0.4f, 0.6f, 0.8f, 1);
-
-        // Update background to reflect severity of pollution
-        Camera.main.backgroundColor = Color.Lerp(start, Color.black, pollution / foodProduction);
 
     }
 
