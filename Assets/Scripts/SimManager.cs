@@ -118,9 +118,6 @@ public class SimManager : MonoBehaviour
     {
         UpdateSettings();
         DisplaySettings();
-
-        // Update background to reflect severity of pollution
-        Camera.main.backgroundColor = Color.Lerp(productiveCol, pollutionCol, pollution / foodProduction);
     }
 
     // FixedUpdate is used for changing the simulation state 
@@ -157,6 +154,10 @@ public class SimManager : MonoBehaviour
 
         foodProduction = agents.Count * 2f;
         totalFood += Math.Max(0, (foodProduction - pollution));
+
+
+        // Update background to reflect severity of pollution
+        Camera.main.backgroundColor = Color.Lerp(productiveCol, pollutionCol, pollution / foodProduction);
 
     }
 
