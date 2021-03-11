@@ -277,7 +277,7 @@ public class AgentManager : MonoBehaviour
     {
         if (agentScript != null)
         {
-            if (agentScript.charisma > trust)
+            if (agentScript.charisma > trust && altruism < 100f)
             {
                 float tempAltruism = altruism;
                 altruism += altruismBonus;
