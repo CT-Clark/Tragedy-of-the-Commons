@@ -305,6 +305,7 @@ public class AgentManager : MonoBehaviour
                 if (simScript.pollution > 0f)
                 {
                     simScript.pollution -= simScript.fossilFuelPollutionPenalty/2;
+                    simScript.pollution = Math.Max(0, simScript.pollution);
                 }
             }
 
@@ -321,6 +322,7 @@ public class AgentManager : MonoBehaviour
             foodQuantity += foodGained;
             SetFoodUI();
             simScript.totalFood -= foodGained;
+            simScript.totalFood = Math.Max(0, simScript.totalFood);
         }
     }
 

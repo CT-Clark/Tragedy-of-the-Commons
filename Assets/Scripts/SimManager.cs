@@ -151,14 +151,11 @@ public class SimManager : MonoBehaviour
         averageLifespan = tempAverageLifespan / agents.Count;
 
         // Add food to the world, the higher pollution the less food added
-
         foodProduction = agents.Count * 2f;
         totalFood += Math.Max(0, (foodProduction - pollution));
 
-
         // Update background to reflect severity of pollution
         Camera.main.backgroundColor = Color.Lerp(productiveCol, pollutionCol, pollution / foodProduction);
-
     }
 
     #endregion BuiltInMethods
@@ -188,20 +185,12 @@ public class SimManager : MonoBehaviour
         agent.name = "Agent" + agentNumber;
         agents.Add(agentScript);
 
-        /*
-        // Change the player's location
-        float spawnX = UnityEngine.Random.Range(-100f, 100f);
-        float spawnY = UnityEngine.Random.Range(-100f, 100f);
-        agent.transform.position = new Vector2(spawnX, spawnY);
-        */
-
         // set location
         float spawnX = UnityEngine.Random.Range(screenBounds.x * -1, screenBounds.x);
         float spawnY = UnityEngine.Random.Range(screenBounds.y * -1, screenBounds.y);
         agent.transform.position = new Vector2(spawnX, spawnY);
 
         agentCount++;
-
     }
 
     #endregion Methods
