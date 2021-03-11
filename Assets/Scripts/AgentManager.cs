@@ -24,6 +24,7 @@ public class AgentManager : MonoBehaviour
 
     // Public fields
     public float altruism; // Scale from 0-100, how likely they are to change to solar
+    public float altruismBonus; // The amount to change an agent's altruism after a collision
     public float charisma; // Scale from 0-100, their ability to influence other agents
     public float trust; // Scale from 0-100, their ability to be manipulated by other agents
     public float foresight; // Scale from 0-100, their ability to predict a calamity
@@ -51,6 +52,7 @@ public class AgentManager : MonoBehaviour
     {
         simScript = GameObject.Find("SimManager").GetComponent<SimManager>();
         age = 0;
+        altruismBonus = 5f;
         travelTime = 0.5f;
     }
 
@@ -60,10 +62,10 @@ public class AgentManager : MonoBehaviour
         if (parentScript) // If this agent has a parent then inherit a lot of traits from them
         {
             foodQuantity = parentScript.foodToBreed;
-            altruism = Math.Max(0, parentScript.altruism + UnityEngine.Random.Range(-10f, 10f));
-            charisma = Math.Max(0, parentScript.charisma + UnityEngine.Random.Range(-10f, 10f));
-            trust = Math.Max(0, parentScript.trust + UnityEngine.Random.Range(-10f, 10f));
-            foresight = Math.Max(0, parentScript.foresight + UnityEngine.Random.Range(-10f, 10f));
+            altruism = Mathf.Clamp(parentScript.altruism + UnityEngine.Random.Range(-10f, 10f), 0, 100);
+            charisma = Mathf.Clamp(parentScript.charisma + UnityEngine.Random.Range(-10f, 10f), 0, 100);
+            trust = Mathf.Clamp(parentScript.trust + UnityEngine.Random.Range(-10f, 10f), 0, 100);
+            foresight = Mathf.Clamp(parentScript.foresight + UnityEngine.Random.Range(-10f, 10f), 0, 100);
             generation = parentScript.generation++;
             energySource = parentScript.energySource; // Kids are more likely to follow their parents' lead, so use the same energy source
             lifespan = Math.Max(0, ((parentScript.lifespan + UnityEngine.Random.Range(0f, 10f)) + simScript.averageLifespan) / 2);
@@ -127,8 +129,6 @@ public class AgentManager : MonoBehaviour
             travelTime = 0.5f;
         }
 
-
-
         // apply some random rotation, somewhat limited to not just completely flip (to avoid staying in same area)
         // float degrees = UnityEngine.Random.Range(-90f, 90f);
         // transform.rotation = Quaternion.Euler(Vector3.forward * degrees);
@@ -169,10 +169,8 @@ public class AgentManager : MonoBehaviour
     public void ChangeLifespan(float amount)
     {
         // Don't go into negative lifespan
-        if (lifespan + amount > 0f)
-        {
-            lifespan += amount;
-        }
+        lifespan += amount;
+        lifespan = Math.Max(0, lifespan);
     }
 
     /// <summary>
@@ -184,7 +182,7 @@ public class AgentManager : MonoBehaviour
     {
         if (foodQuantity >= foodToBreed + 10f 
             && age > 20f 
-            && (simScript.pollution / simScript.foodProduction) * 100 > 100 - foresight 
+            && simScript.pollutionPercentage > 100 - foresight 
             && simScript.totalFood > simScript.agents.Count * foresight * 10)
         {
             foodQuantity -= foodToBreed; // Breeding uses food, that food is given to the spawned child
@@ -194,13 +192,11 @@ public class AgentManager : MonoBehaviour
             agent.name = "Agent" + simScript.agentCount;
             simScript.agents.Add(agentScript); // Add to the world agent list
 
-
-            // Change the agent's location
+            // Change the new agent's location
             float spawnX = transform.position.x + UnityEngine.Random.Range(-10f, 10f);
             float spawnY = transform.position.y + UnityEngine.Random.Range(-10f, 10f);
             agent.transform.position = new Vector2(spawnX, spawnY);
             simScript.agentCount++;
-
         }
     }
 
@@ -230,16 +226,14 @@ public class AgentManager : MonoBehaviour
     /// </summary>
     public void CheckCalamity()
     {
-        // TODO: re-enable shifting back to fossil fuels after changing collisions
-
         // If pollution is too high and the agent is altruistic enough, change to (or continue to use) solar
-        if ((simScript.pollution / simScript.foodProduction) * 100 > 100 - foresight && 100 - (simScript.pollution / simScript.foodProduction) * 100 < altruism) 
+        if (simScript.pollutionPercentage > 100 - foresight && 100 - simScript.pollutionPercentage < altruism) 
         {
             // If energy source was previously fossil fuels print this to log
             if (energySource != "solar")
             {
                 Debug.Log(gameObject.name + " has changed their energy source due to high levels of pollution affecting food growth rates.");
-                Debug.Log(gameObject.name + "'s foresight: " + foresight + ", altruism: " + altruism + " | Pollution percentage: " + ((simScript.pollution / simScript.foodProduction) * 100) + "%");
+                //Debug.Log(gameObject.name + "'s foresight: " + foresight + ", altruism: " + altruism + " | Pollution percentage: " + ((simScript.pollution / simScript.foodProduction) * 100) + "%");
             }
             energySource = "solar";
             agentColor = simScript.renewablesColor;
@@ -256,8 +250,7 @@ public class AgentManager : MonoBehaviour
             agentColor = simScript.renewablesColor;
             //AgentTemplate.GetComponent<SpriteRenderer>().color = agentColor;
         }
-        // Otherwise use fossil fuels (The agent believes everything is okay in the world and would prefer to collect more food) Possibly change
-        /*
+        // Otherwise use fossil fuels (The agent believes everything is okay in the world and would prefer to collect more food)
         else
         {
             if (energySource == "solar")
@@ -267,7 +260,6 @@ public class AgentManager : MonoBehaviour
             energySource = "fossilFuels";
             agentColor = simScript.fossilFuelsColor;
         }
-        */
     }
 
     void OnCollisionEnter2D(Collision2D col) { 
@@ -278,29 +270,19 @@ public class AgentManager : MonoBehaviour
     }
 
     /// <summary>
-    /// When two agents collide have them try to convince each other to change their energy sources .
+    /// When two agents collide have them try to convince each other to change their altruism trait.
+    /// If their charisma score is higher than your trust score, you've been convinced to become more altruistic
     /// </summary>
     public void ResolveCollision()
     {
-        // TODO: Factor in altruism - Change traits instead of energy sources
-        // If their charisma score is higher than your trust score, follow their lead
         if (agentScript != null)
         {
             if (agentScript.charisma > trust)
             {
-                energySource = agentScript.energySource;
-                agentColor = agentScript.agentColor;
-                AgentTemplate.GetComponent<SpriteRenderer>().color = agentColor;
-
-                Debug.Log(gameObject.name + " is convinced to use " + energySource);
-            }
-            if (charisma > agentScript.trust) 
-            {
-                agentScript.energySource = energySource;
-                agentScript.agentColor = agentColor;
-                agentScript.AgentTemplate.GetComponent<SpriteRenderer>().color = agentScript.agentColor;
-
-                Debug.Log(agentScript.gameObject.name + " is convinced to use " + energySource);
+                float tempAltruism = altruism;
+                altruism += altruismBonus;
+                altruism = Mathf.Clamp(altruism, 0, 100);
+                Debug.Log(gameObject.name + "'s altruism score changed from " + tempAltruism + " -> " + altruism);
             }
         }
 
@@ -313,7 +295,7 @@ public class AgentManager : MonoBehaviour
     public void GatherFood()
     {
         // Check to make sure food can still be gained, if it can't then don't add any food
-        if (simScript.totalFood > 0f)
+        if (simScript.totalFood > simScript.solarFoodValue * 1.5 + simScript.fossilFuelFoodBonus)
         {
             float foodGained = simScript.solarFoodValue + UnityEngine.Random.Range(-simScript.solarFoodValue/2, simScript.solarFoodValue/2); // Small amount of randomness, sometimes the agents find and eat more/less food
 
@@ -351,12 +333,14 @@ public class AgentManager : MonoBehaviour
         foodQuantity -= simScript.solarFoodValue - UnityEngine.Random.Range(0f, simScript.solarFoodValue / 2); 
     }
 
+    /// <summary>
+    /// This method sets the colour of the circle around agents depending on how much food they've acquired
+    /// </summary>
     public void SetFoodUI()
     {
         slider.value = foodQuantity;
         fillImage.color = Color.Lerp(noFoodUI, foodUI, Math.Min(1f, foodQuantity / foodToBreed));
     }
-
 
     #endregion Methods
 }
