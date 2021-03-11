@@ -17,6 +17,10 @@ public class AgentManager : MonoBehaviour
     public float foodQuantity; // This agents collection of food
     public float age; // The agent's age
     private System.Random rnd;
+    private Rigidbody2D rigidBody;
+    private Vector2 destination;  // a semi-random target location to move towards 
+    private float travelTime;
+    private bool moveStart = false;
 
     // Public fields
     public float altruism; // Scale from 0-100, how likely they are to change to solar
@@ -46,8 +50,8 @@ public class AgentManager : MonoBehaviour
     void Awake()
     {
         simScript = GameObject.Find("SimManager").GetComponent<SimManager>();
-
         age = 0;
+        travelTime = 0.5f;
     }
 
     // Start is called before the first frame update
@@ -83,26 +87,58 @@ public class AgentManager : MonoBehaviour
 
         }
 
+        rigidBody = GetComponent<Rigidbody2D>();
         rnd = new System.Random();
     }
 
     // Update is called once per frame
+    // https://answers.unity.com/questions/664712/rotate-2d-object-to-facing-direction.html
+    // above referenced in creating random wiggle
     void Update()
     {
+        if (!moveStart)
+        {
+            Vector2 firstMove = new Vector2(UnityEngine.Random.Range(-1, 1), UnityEngine.Random.Range(-1, 1));
+            rigidBody.AddForce(firstMove * 200, ForceMode2D.Force);
+            moveStart = true;
+        }
+        else if (travelTime == 0.5f) rigidBody.AddForce(transform.right * 200, ForceMode2D.Force);
 
-        // apply some random rotation, somewhat limited to not just completely flip
-        //transform.Rotate(transform.right, UnityEngine.Random.Range(-100f, 100f));
-        //transform.Rotate(transform.right, UnityEngine.Random.Range(-100f, 100f));
+        travelTime -= Time.deltaTime * UnityEngine.Random.Range(0, 2);
+
+        if (travelTime <= 0)
+        {
+
+            Vector2 dir = -rigidBody.velocity;
+
+            if(dir.x == 0 ) dir.x = rigidBody.velocity.x + UnityEngine.Random.Range(-10, 10);
+            if(dir.y == 0) dir.y = rigidBody.velocity.y + UnityEngine.Random.Range(-10, 10);
+
+            transform.Translate(Vector3.right * dir.x * Time.deltaTime, Space.World);
+            transform.Translate(Vector3.up * dir.y * Time.deltaTime, Space.World);
+
+            //destination = dir;
+
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.AngleAxis(angle*UnityEngine.Random.Range(1, 2), Vector3.forward);
+
+            //rigidBody.velocity = Vector2.zero;
+
+            travelTime = 0.5f;
+        }
+
+
+
+        // apply some random rotation, somewhat limited to not just completely flip (to avoid staying in same area)
+        // float degrees = UnityEngine.Random.Range(-90f, 90f);
+        // transform.rotation = Quaternion.Euler(Vector3.forward * degrees);
 
         // move in direction of rotation
-        Vector2 newPosition = transform.position;
+        //Vector2 newPosition = transform.position;
         //newPosition.x = newPosition.x + 0.1f * transform.right.x;
-        //newPosition.y = newPosition.y + 0.1f * transform.up.y;
+        //newPosition.y = newPosition.y + 0.1f * transform.right.y;
 
-        newPosition.x = UnityEngine.Random.Range(newPosition.x - 0.5f, newPosition.x + 0.5f);
-        newPosition.y = UnityEngine.Random.Range(newPosition.y - 0.5f, newPosition.y + 0.5f);
-        
-        transform.position = newPosition;    
+        // transform.position = newPosition;    
     }
 
     // FixedUpdate is used for changing the simulation state 
@@ -223,7 +259,7 @@ public class AgentManager : MonoBehaviour
             }
             energySource = "solar";
             agentColor = simScript.renewablesColor;
-            AgentTemplate.GetComponent<SpriteRenderer>().color = agentColor;
+            //AgentTemplate.GetComponent<SpriteRenderer>().color = agentColor;
         }
         // Otherwise use fossil fuels (The agent believes everything is okay in the world and would prefer to collect more food) Possibly change
         /*
@@ -239,6 +275,13 @@ public class AgentManager : MonoBehaviour
         */
     }
 
+    void OnCollisionEnter2D(Collision2D col) { 
+
+        if(col.gameObject.GetComponent<AgentManager>() == null) return;
+        
+        agentScript = col.gameObject.GetComponent<AgentManager>();
+    }
+
     /// <summary>
     /// When two agents collide have them try to convince each other to change their energy sources .
     /// </summary>
@@ -246,13 +289,27 @@ public class AgentManager : MonoBehaviour
     {
         // TODO: Factor in altruism
         // If their charisma score is higher than your trust score, follow their lead
-        if (agentScript)
+        if (agentScript != null)
         {
             if (agentScript.charisma > trust)
             {
                 energySource = agentScript.energySource;
+                agentColor = agentScript.agentColor;
+                AgentTemplate.GetComponent<SpriteRenderer>().color = agentColor;
+
+                Debug.Log(gameObject.name + " is convinced to use " + energySource);
+            }
+            if (charisma > agentScript.trust) 
+            {
+                agentScript.energySource = energySource;
+                agentScript.agentColor = agentColor;
+                agentScript.AgentTemplate.GetComponent<SpriteRenderer>().color = agentScript.agentColor;
+
+                Debug.Log(agentScript.gameObject.name + " is convinced to use " + energySource);
             }
         }
+
+        agentScript = null;
     }
 
     /// <summary>
