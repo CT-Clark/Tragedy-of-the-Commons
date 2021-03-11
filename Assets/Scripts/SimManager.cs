@@ -42,8 +42,8 @@ public class SimManager : MonoBehaviour
     public GameObject AgentTemplate;
 
     //Colors showing pollution relative to food production
-    Color productiveCol = new Color(0.4f, 0.6f, 0.8f, 1);
-    Color pollutionCol = Color.black;
+    public Color productiveCol = new Color(0.4f, 0.6f, 0.8f, 1);
+    public Color pollutionCol = Color.black;
 
     #endregion
 
