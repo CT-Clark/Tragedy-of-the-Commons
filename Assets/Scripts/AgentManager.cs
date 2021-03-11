@@ -230,12 +230,7 @@ public class AgentManager : MonoBehaviour
     /// </summary>
     public void CheckCalamity()
     {
-        // TODO: This will need to be changed for collisions, after being convinced to change are agents able to switch their energy source on their own?
-        // Would this overwrite the collision result?
-        // If I've been convinced to change to fossil fuels but I also have sufficient foresight and altruism, should I change back to solar? 
-        // Ignore my own values for the rest of my life?
-
-
+        // TODO: re-enable shifting back to fossil fuels after changing collisions
 
         // If pollution is too high and the agent is altruistic enough, change to (or continue to use) solar
         if ((simScript.pollution / simScript.foodProduction) * 100 > 100 - foresight && 100 - (simScript.pollution / simScript.foodProduction) * 100 < altruism) 
@@ -287,7 +282,7 @@ public class AgentManager : MonoBehaviour
     /// </summary>
     public void ResolveCollision()
     {
-        // TODO: Factor in altruism
+        // TODO: Factor in altruism - Change traits instead of energy sources
         // If their charisma score is higher than your trust score, follow their lead
         if (agentScript != null)
         {
