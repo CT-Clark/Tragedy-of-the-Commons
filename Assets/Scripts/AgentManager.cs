@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AgentManager : MonoBehaviour
 {
@@ -30,6 +31,10 @@ public class AgentManager : MonoBehaviour
     public string energySource; // Either "solar" or "fossilFuels"
     public int generation;
     public float lifespan; // When this agent will die due to time
+    public Slider slider;
+    public Image fillImage;
+    public Color noFoodUI;
+    public Color foodUI;
 
     public SimManager simScript; // A reference to the world state
     public AgentManager agentScript; // A reference to another agent (used for collisions)
@@ -337,6 +342,7 @@ public class AgentManager : MonoBehaviour
             }
 
             foodQuantity += foodGained;
+            SetFoodUI();
             simScript.totalFood -= foodGained;
         }
     }
@@ -349,6 +355,13 @@ public class AgentManager : MonoBehaviour
     {
         foodQuantity -= simScript.solarFoodValue - UnityEngine.Random.Range(0f, simScript.solarFoodValue / 2); 
     }
+
+    public void SetFoodUI()
+    {
+        slider.value = foodQuantity;
+        fillImage.color = Color.Lerp(noFoodUI, foodUI, Math.Min(1f, foodQuantity / foodToBreed));
+    }
+
 
     #endregion Methods
 }
