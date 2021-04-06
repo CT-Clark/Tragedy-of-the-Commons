@@ -86,7 +86,6 @@ public class AgentManager : MonoBehaviour
 
             lifespan = simScript.averageLifespan + UnityEngine.Random.Range(-10f, 10f);
             foodToBreed = 80f + UnityEngine.Random.Range(-20f, 20f);
-
         }
 
         rigidBody = GetComponent<Rigidbody2D>();
@@ -110,7 +109,6 @@ public class AgentManager : MonoBehaviour
 
         if (travelTime <= 0)
         {
-
             Vector2 dir = -rigidBody.velocity;
 
             if(dir.x == 0 ) dir.x = rigidBody.velocity.x + UnityEngine.Random.Range(-10, 10);
@@ -119,26 +117,11 @@ public class AgentManager : MonoBehaviour
             transform.Translate(Vector3.right * dir.x * Time.deltaTime, Space.World);
             transform.Translate(Vector3.up * dir.y * Time.deltaTime, Space.World);
 
-            //destination = dir;
-
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.AngleAxis(angle*UnityEngine.Random.Range(1, 2), Vector3.forward);
 
-            //rigidBody.velocity = Vector2.zero;
-
             travelTime = 0.5f;
-        }
-
-        // apply some random rotation, somewhat limited to not just completely flip (to avoid staying in same area)
-        // float degrees = UnityEngine.Random.Range(-90f, 90f);
-        // transform.rotation = Quaternion.Euler(Vector3.forward * degrees);
-
-        // move in direction of rotation
-        //Vector2 newPosition = transform.position;
-        //newPosition.x = newPosition.x + 0.1f * transform.right.x;
-        //newPosition.y = newPosition.y + 0.1f * transform.right.y;
-
-        // transform.position = newPosition;    
+        }   
     }
 
     // FixedUpdate is used for changing the simulation state 
