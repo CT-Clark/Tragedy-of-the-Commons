@@ -16,9 +16,7 @@ public class AgentManager : MonoBehaviour
     // Private fields
     public float foodQuantity; // This agents collection of food
     public float age; // The agent's age
-    private System.Random rnd;
     private Rigidbody2D rigidBody;
-    private Vector2 destination;  // a semi-random target location to move towards 
     private float travelTime;
     private bool moveStart = false;
 
@@ -41,7 +39,6 @@ public class AgentManager : MonoBehaviour
     public AgentManager agentScript; // A reference to another agent (used for collisions)
     public AgentManager parentScript; // A reference to this agent's parent to determine traits
     public GameObject AgentTemplate;
-    public Color agentColor; // Correlates to the agent's current "energySource"
 
     #endregion
 
@@ -70,7 +67,7 @@ public class AgentManager : MonoBehaviour
             energySource = parentScript.energySource; // Kids are more likely to follow their parents' lead, so use the same energy source
             lifespan = Math.Max(0, ((parentScript.lifespan + UnityEngine.Random.Range(0f, 10f)) + simScript.averageLifespan) / 2);
             foodToBreed = Math.Max(25, parentScript.foodToBreed + UnityEngine.Random.Range(-5f, 5f));
-            agentColor = parentScript.agentColor;
+            AgentTemplate.GetComponent<SpriteRenderer>().color = parentScript.GetComponent<SpriteRenderer>().color;
         }
         else // Agent is first generation
         {
@@ -81,24 +78,22 @@ public class AgentManager : MonoBehaviour
             foresight = UnityEngine.Random.Range(0f, 100f);
             generation = 0;
             energySource = "fossilFuels";
-            agentColor = simScript.fossilFuelsColor;
-            AgentTemplate.GetComponent<SpriteRenderer>().color = agentColor;
-
+            AgentTemplate.GetComponent<SpriteRenderer>().color = simScript.fossilFuelsColor;
             lifespan = simScript.averageLifespan + UnityEngine.Random.Range(-10f, 10f);
             foodToBreed = 80f + UnityEngine.Random.Range(-20f, 20f);
         }
 
         rigidBody = GetComponent<Rigidbody2D>();
-        rnd = new System.Random();
     }
 
-    // Update is called once per frame
-    // 
-    // above referenced in creating random wiggle
+    /// <summary>
+    /// Handles graphics per frame. 
+    /// </summary>
     void Update()
     {
-        
+        SetFoodUI();
     }
+
 
     // FixedUpdate is used for changing the simulation state.
     void FixedUpdate()
@@ -124,9 +119,7 @@ public class AgentManager : MonoBehaviour
     /// <param name="col"></param>
     void OnCollisionEnter2D(Collision2D col)
     {
-
         if (col.gameObject.GetComponent<AgentManager>() == null) return;
-
         agentScript = col.gameObject.GetComponent<AgentManager>();
     }
 
@@ -239,37 +232,32 @@ public void ChangeLifespan(float amount)
             // If energy source was previously fossil fuels print this to log
             if (energySource != "solar")
             {
-                Debug.Log(gameObject.name + " has changed their energy source due to high levels of pollution affecting food growth rates.");
-                //Debug.Log(gameObject.name + "'s foresight: " + foresight + ", altruism: " + altruism + " | Pollution percentage: " + ((simScript.pollution / simScript.foodProduction) * 100) + "%");
+                //Debug.Log(gameObject.name + " has changed their energy source due to high levels of pollution affecting food growth rates.");
             }
             energySource = "solar";
-            agentColor = simScript.renewablesColor;
-            AgentTemplate.GetComponent<SpriteRenderer>().color = agentColor;
+            AgentTemplate.GetComponent<SpriteRenderer>().color = simScript.renewablesColor;
         }
         // If average lifespan is too low and the agent is altruistic enough, change to (or continue to use) solar
         else if (simScript.averageLifespan < foresight && simScript.averageLifespan < altruism)
         {
             if (energySource != "solar")
             {
-                Debug.Log(gameObject.name + " has changed energy sources due to low average lifespan.");
+                //Debug.Log(gameObject.name + " has changed energy sources due to low average lifespan.");
             }
             energySource = "solar";
-            agentColor = simScript.renewablesColor;
-            //AgentTemplate.GetComponent<SpriteRenderer>().color = agentColor;
+            AgentTemplate.GetComponent<SpriteRenderer>().color = simScript.renewablesColor;
         }
         // Otherwise use fossil fuels (The agent believes everything is okay in the world and would prefer to collect more food)
         else
         {
             if (energySource == "solar")
             {
-                Debug.Log(gameObject.name + " has changed from solar to fossil fuels.");
+                //Debug.Log(gameObject.name + " has changed from solar to fossil fuels.");
             }
             energySource = "fossilFuels";
-            agentColor = simScript.fossilFuelsColor;
+            AgentTemplate.GetComponent<SpriteRenderer>().color = simScript.fossilFuelsColor;
         }
     }
-
-
 
     /// <summary>
     /// When two agents collide have them try to convince each other to change their altruism trait.
@@ -281,10 +269,10 @@ public void ChangeLifespan(float amount)
         {
             if (agentScript.charisma > trust && altruism < 100f)
             {
-                float tempAltruism = altruism;
                 altruism += altruismBonus;
                 altruism = Mathf.Clamp(altruism, 0, 100);
-                Debug.Log(gameObject.name + "'s altruism score changed from " + tempAltruism + " -> " + altruism);
+                //float tempAltruism = altruism;
+                //Debug.Log(gameObject.name + "'s altruism score changed from " + tempAltruism + " -> " + altruism);
             }
         }
 
@@ -322,7 +310,6 @@ public void ChangeLifespan(float amount)
             }
 
             foodQuantity += foodGained;
-            SetFoodUI();
             simScript.totalFood -= foodGained;
             simScript.totalFood = Math.Max(0, simScript.totalFood);
         }
