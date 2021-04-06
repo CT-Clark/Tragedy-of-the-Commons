@@ -93,9 +93,53 @@ public class AgentManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    // https://answers.unity.com/questions/664712/rotate-2d-object-to-facing-direction.html
+    // 
     // above referenced in creating random wiggle
     void Update()
+    {
+        
+    }
+
+    // FixedUpdate is used for changing the simulation state.
+    void FixedUpdate()
+    {
+        EatFood();
+        CheckDeath();
+        CheckSpawn();
+        CheckCalamity();
+        GatherFood();
+        Move();
+        age += 0.1f;
+    }
+
+    // LateUpdate is called after FixedUpdate, used to handle collisions.
+    void LateUpdate()
+    {
+        ResolveCollision();
+    }
+
+    /// <summary>
+    /// Resolves collisions.
+    /// </summary>
+    /// <param name="col"></param>
+    void OnCollisionEnter2D(Collision2D col)
+    {
+
+        if (col.gameObject.GetComponent<AgentManager>() == null) return;
+
+        agentScript = col.gameObject.GetComponent<AgentManager>();
+    }
+
+    #endregion BuiltInMethods
+
+    #region Methods
+
+    /// <summary>
+    /// This moves the agent.
+    /// https://answers.unity.com/questions/664712/rotate-2d-object-to-facing-direction.html
+    /// The above was referenced in creating a random wiggle
+    /// </summary>
+    private void Move()
     {
         if (!moveStart)
         {
@@ -111,45 +155,25 @@ public class AgentManager : MonoBehaviour
         {
             Vector2 dir = -rigidBody.velocity;
 
-            if(dir.x == 0 ) dir.x = rigidBody.velocity.x + UnityEngine.Random.Range(-10, 10);
-            if(dir.y == 0) dir.y = rigidBody.velocity.y + UnityEngine.Random.Range(-10, 10);
+            if (dir.x == 0) dir.x = rigidBody.velocity.x + UnityEngine.Random.Range(-10, 10);
+            if (dir.y == 0) dir.y = rigidBody.velocity.y + UnityEngine.Random.Range(-10, 10);
 
             transform.Translate(Vector3.right * dir.x * Time.deltaTime, Space.World);
             transform.Translate(Vector3.up * dir.y * Time.deltaTime, Space.World);
 
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.AngleAxis(angle*UnityEngine.Random.Range(1, 2), Vector3.forward);
+            transform.rotation = Quaternion.AngleAxis(angle * UnityEngine.Random.Range(1, 2), Vector3.forward);
 
             travelTime = 0.5f;
-        }   
+        }
     }
+    
 
-    // FixedUpdate is used for changing the simulation state 
-    void FixedUpdate()
-    {
-        EatFood();
-        CheckDeath();
-        CheckSpawn();
-        CheckCalamity();
-        GatherFood();
-        age += 0.1f;
-    }
-
-    // LateUpdate is called after FixedUpdate, used to handle collisions
-    void LateUpdate()
-    {
-        ResolveCollision();
-    }
-
-    #endregion BuiltInMethods
-
-    #region Methods
-
-    /// <summary>
-    /// This can be called externally in order to change this agent's lifespan.
-    /// </summary>
-    /// <param name="amount"></param>
-    public void ChangeLifespan(float amount)
+/// <summary>
+/// This can be called externally in order to change this agent's lifespan.
+/// </summary>
+/// <param name="amount"></param>
+public void ChangeLifespan(float amount)
     {
         // Don't go into negative lifespan
         lifespan += amount;
@@ -245,12 +269,7 @@ public class AgentManager : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter2D(Collision2D col) { 
 
-        if(col.gameObject.GetComponent<AgentManager>() == null) return;
-        
-        agentScript = col.gameObject.GetComponent<AgentManager>();
-    }
 
     /// <summary>
     /// When two agents collide have them try to convince each other to change their altruism trait.
