@@ -6,11 +6,9 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Events;
 
 public class SimManager : MonoBehaviour
 {
@@ -49,15 +47,19 @@ public class SimManager : MonoBehaviour
 
     #region UI
 
+    // Food Production Rate
     public Text FoodProductionRateTextUI;
     public Slider FoodProductionRateSliderUI;
 
+    // Solar Food Value
     public Text SolarFoodValueTextUI;
     public Slider SolarFoodValueSliderUI;
 
+    // Fossil Fuel Food Bonus
     public Text FossilFuelFoodBonusTextUI;
     public Slider FossilFuelFoodBonusSliderUI;
 
+    // Fssil Fuel Pollution Penalty
     public Text FossilFuelPollutionPenaltyTextUI;
     public Slider FossilFuelPollutionPenaltySliderUI;
 
@@ -124,6 +126,7 @@ public class SimManager : MonoBehaviour
     void FixedUpdate()
     {
         pollutionPercentage = pollution / foodProduction * 100;
+        pollutionPercentage = Mathf.Clamp(pollutionPercentage, 0f, 100f);
     }
 
     // LateUpdate is called after FixedUpdate and is used to modify things after agents have acted
@@ -169,7 +172,6 @@ public class SimManager : MonoBehaviour
     {
         for (int i = 0; i < numberOfAgents; i++)
         {
-            // Instantiate an agent
             CreateAgent(i);
         }
     }
@@ -185,7 +187,7 @@ public class SimManager : MonoBehaviour
         agent.name = "Agent" + agentNumber;
         agents.Add(agentScript);
 
-        // set location
+        // Set location
         float spawnX = UnityEngine.Random.Range(screenBounds.x * -1, screenBounds.x);
         float spawnY = UnityEngine.Random.Range(screenBounds.y * -1, screenBounds.y);
         agent.transform.position = new Vector2(spawnX, spawnY);
@@ -194,6 +196,4 @@ public class SimManager : MonoBehaviour
     }
 
     #endregion Methods
-
-    
 }
