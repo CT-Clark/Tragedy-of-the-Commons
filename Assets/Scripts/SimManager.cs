@@ -32,6 +32,7 @@ public class SimManager : MonoBehaviour
     public float fossilFuelPollutionPenalty; // How much pollution to add when fossil fuels used
     public float averageLifespan;
     public float pollutionPercentage;
+    public float agingRate;
     public Color fossilFuelsColor; //color used for fossil fuel users
     public Color renewablesColor; //color used for renewables users
 
@@ -63,6 +64,10 @@ public class SimManager : MonoBehaviour
     public Text FossilFuelPollutionPenaltyTextUI;
     public Slider FossilFuelPollutionPenaltySliderUI;
 
+    // Aging Rate
+    public Text AgingRateTextUI;
+    public Slider AgingRateSliderUI;
+
     /// <summary>
     /// Display the current settings.
     /// </summary>
@@ -72,6 +77,7 @@ public class SimManager : MonoBehaviour
         SolarFoodValueTextUI.text = string.Format("Solar Food Value ({0:0.00})", solarFoodValue);
         FossilFuelFoodBonusTextUI.text = string.Format("Fossil Fuel Food Bonus ({0:0.00})", fossilFuelFoodBonus);
         FossilFuelPollutionPenaltyTextUI.text = string.Format("Fossil Fuel Pollution Penalty ({0:0.00})", fossilFuelPollutionPenalty);
+        AgingRateTextUI.text = string.Format("Aging Rate ({0:0.00})", agingRate);
     }
 
     /// <summary>
@@ -83,6 +89,7 @@ public class SimManager : MonoBehaviour
         solarFoodValue = SolarFoodValueSliderUI.value;
         fossilFuelFoodBonus = FossilFuelFoodBonusSliderUI.value;
         fossilFuelPollutionPenalty = FossilFuelPollutionPenaltySliderUI.value;
+        agingRate = AgingRateSliderUI.value;
     }
 
     /// <summary>
@@ -98,6 +105,8 @@ public class SimManager : MonoBehaviour
         FossilFuelFoodBonusSliderUI.value = 0.05f;
         FossilFuelPollutionPenaltySliderUI.maxValue = 0.01f;
         FossilFuelPollutionPenaltySliderUI.value = 0.005f;
+        AgingRateSliderUI.maxValue = 1f;
+        AgingRateSliderUI.value = 0.1f;
     }
 
     #endregion UI
