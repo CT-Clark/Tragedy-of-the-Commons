@@ -56,34 +56,7 @@ public class AgentManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (parentScript) // If this agent has a parent then inherit a lot of traits from them
-        {
-            foodQuantity = parentScript.foodToBreed;
-            altruism = Mathf.Clamp(parentScript.altruism + UnityEngine.Random.Range(-10f, 10f), 0, 100);
-            charisma = Mathf.Clamp(parentScript.charisma + UnityEngine.Random.Range(-10f, 10f), 0, 100);
-            trust = Mathf.Clamp(parentScript.trust + UnityEngine.Random.Range(-10f, 10f), 0, 100);
-            foresight = Mathf.Clamp(parentScript.foresight + UnityEngine.Random.Range(-10f, 10f), 0, 100);
-            generation = parentScript.generation++;
-            energySource = parentScript.energySource; // Kids are more likely to follow their parents' lead, so use the same energy source
-            lifespan = Math.Max(0, ((parentScript.lifespan + UnityEngine.Random.Range(0f, 10f)) + simScript.averageLifespan) / 2);
-            foodToBreed = Math.Max(25, parentScript.foodToBreed + UnityEngine.Random.Range(-5f, 5f));
-            AgentTemplate.GetComponent<SpriteRenderer>().color = parentScript.GetComponent<SpriteRenderer>().color;
-        }
-        else // Agent is first generation
-        {
-            foodQuantity = 10f;
-            altruism = UnityEngine.Random.Range(0f, 100f);
-            charisma = UnityEngine.Random.Range(0f, 100f);
-            trust = UnityEngine.Random.Range(0f, 100f);
-            foresight = UnityEngine.Random.Range(0f, 100f);
-            generation = 0;
-            energySource = "fossilFuels";
-            AgentTemplate.GetComponent<SpriteRenderer>().color = simScript.fossilFuelsColor;
-            lifespan = simScript.averageLifespan + UnityEngine.Random.Range(-10f, 10f);
-            foodToBreed = 80f + UnityEngine.Random.Range(-20f, 20f);
-        }
-
-        rigidBody = GetComponent<Rigidbody2D>();
+        Initialize();
     }
 
     /// <summary>
@@ -94,7 +67,6 @@ public class AgentManager : MonoBehaviour
         SetFoodUI();
     }
 
-
     // FixedUpdate is used for changing the simulation state.
     void FixedUpdate()
     {
@@ -104,7 +76,7 @@ public class AgentManager : MonoBehaviour
         CheckCalamity();
         GatherFood();
         Move();
-        age += 0.1f;
+        age += simScript.AgingRateSliderUI.value;
     }
 
     // LateUpdate is called after FixedUpdate, used to handle collisions.
@@ -134,30 +106,35 @@ public class AgentManager : MonoBehaviour
     /// </summary>
     private void Move()
     {
-        if (!moveStart)
+        if (!moveStart) // Give a little boost when starting
         {
             Vector2 firstMove = new Vector2(UnityEngine.Random.Range(-1, 1), UnityEngine.Random.Range(-1, 1));
             rigidBody.AddForce(firstMove * 200, ForceMode2D.Force);
             moveStart = true;
         }
-        else if (travelTime == 0.5f) rigidBody.AddForce(transform.right * 200, ForceMode2D.Force);
+        else if (travelTime == 0.5f) // Give a boost when choosing a new direction
+        {
+            rigidBody.AddForce(transform.right * 200, ForceMode2D.Force); 
+        }
 
         travelTime -= Time.deltaTime * UnityEngine.Random.Range(0, 2);
 
         if (travelTime <= 0)
         {
+            // Decide which direction to move
             Vector2 dir = -rigidBody.velocity;
-
             if (dir.x == 0) dir.x = rigidBody.velocity.x + UnityEngine.Random.Range(-10, 10);
             if (dir.y == 0) dir.y = rigidBody.velocity.y + UnityEngine.Random.Range(-10, 10);
 
+            // Move
             transform.Translate(Vector3.right * dir.x * Time.deltaTime, Space.World);
             transform.Translate(Vector3.up * dir.y * Time.deltaTime, Space.World);
 
+            // Rotate to face moving direction
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.AngleAxis(angle * UnityEngine.Random.Range(1, 2), Vector3.forward);
 
-            travelTime = 0.5f;
+            travelTime = 0.5f; // Resets travel time
         }
     }
     
@@ -331,6 +308,45 @@ public void ChangeLifespan(float amount)
     {
         slider.value = foodQuantity;
         fillImage.color = Color.Lerp(noFoodUI, foodUI, Math.Min(1f, foodQuantity / foodToBreed));
+    }
+
+    private void Initialize()
+    {
+        if (parentScript) // If this agent has a parent then inherit a lot of traits from them
+        {
+            foodQuantity = parentScript.foodToBreed;
+            altruism = Mathf.Clamp(parentScript.altruism +
+                UnityEngine.Random.Range(-simScript.altruismRange, simScript.altruismRange), 0, 100);
+            charisma = Mathf.Clamp(parentScript.charisma +
+                UnityEngine.Random.Range(-simScript.charismaRange, simScript.charismaRange), 0, 100);
+            trust = Mathf.Clamp(parentScript.trust +
+                UnityEngine.Random.Range(-simScript.trustRange, simScript.trustRange), 0, 100);
+            foresight = Mathf.Clamp(parentScript.foresight +
+                UnityEngine.Random.Range(-simScript.foresightRange, simScript.foresightRange), 0, 100);
+            generation = parentScript.generation++;
+            energySource = parentScript.energySource; // Kids are more likely to follow their parents' lead, so use the same energy source
+            lifespan = Math.Max(0, ((parentScript.lifespan +
+                UnityEngine.Random.Range(0f, simScript.lifespanRange)) + simScript.averageLifespan) / 2);
+            foodToBreed = Math.Max(25, parentScript.foodToBreed +
+                UnityEngine.Random.Range(-simScript.foodToBreedRange, simScript.foodToBreedRange));
+            AgentTemplate.GetComponent<SpriteRenderer>().color = parentScript.GetComponent<SpriteRenderer>().color;
+        }
+        else // Agent is first generation
+        {
+            foodQuantity = 10f;
+            altruism = UnityEngine.Random.Range(0f, 100f);
+            charisma = UnityEngine.Random.Range(0f, 100f);
+            trust = UnityEngine.Random.Range(0f, 100f);
+            foresight = UnityEngine.Random.Range(0f, 100f);
+            generation = 0;
+            energySource = "fossilFuels";
+            AgentTemplate.GetComponent<SpriteRenderer>().color = simScript.fossilFuelsColor;
+            lifespan = simScript.averageLifespan +
+                UnityEngine.Random.Range(-simScript.lifespanRange, simScript.lifespanRange);
+            foodToBreed = 80f + UnityEngine.Random.Range(-simScript.foodToBreedRange, simScript.foodToBreedRange);
+        }
+
+        rigidBody = GetComponent<Rigidbody2D>();
     }
 
     #endregion Methods

@@ -33,6 +33,12 @@ public class SimManager : MonoBehaviour
     public float averageLifespan;
     public float pollutionPercentage;
     public float agingRate;
+    public float altruismRange;
+    public float charismaRange;
+    public float trustRange;
+    public float foresightRange;
+    public float lifespanRange;
+    public float foodToBreedRange;
     public Color fossilFuelsColor; //color used for fossil fuel users
     public Color renewablesColor; //color used for renewables users
 
@@ -68,6 +74,30 @@ public class SimManager : MonoBehaviour
     public Text AgingRateTextUI;
     public Slider AgingRateSliderUI;
 
+    // Altruism Range
+    public Text AltruismRangeTextUI;
+    public Slider AltruismRangeSliderUI;
+
+    // Charisma Range
+    public Text CharismaRangeTextUI;
+    public Slider CharismaRangeSliderUI;
+
+    // Trust Range
+    public Text TrustRangeTextUI;
+    public Slider TrustRangeSliderUI;
+
+    // Foresight Range
+    public Text ForesightRangeTextUI;
+    public Slider ForesightRangeSliderUI;
+
+    // Lifespan Range
+    public Text LifespanRangeTextUI;
+    public Slider LifespanRangeSliderUI;
+
+    // Food To breed Range
+    public Text FoodToBreedRangeTextUI;
+    public Slider FoodToBreedRangeSliderUI;
+
     /// <summary>
     /// Display the current settings.
     /// </summary>
@@ -78,6 +108,13 @@ public class SimManager : MonoBehaviour
         FossilFuelFoodBonusTextUI.text = string.Format("Fossil Fuel Food Bonus ({0:0.00})", fossilFuelFoodBonus);
         FossilFuelPollutionPenaltyTextUI.text = string.Format("Fossil Fuel Pollution Penalty ({0:0.00})", fossilFuelPollutionPenalty);
         AgingRateTextUI.text = string.Format("Aging Rate ({0:0.00})", agingRate);
+
+        AltruismRangeTextUI.text = string.Format("Altruism Range ({0:0.00})", altruismRange);
+        CharismaRangeTextUI.text = string.Format("Charisma Range ({0:0.00})", charismaRange);
+        TrustRangeTextUI.text = string.Format("Trust Range ({0:0.00})", trustRange);
+        ForesightRangeTextUI.text = string.Format("Foresight Range ({0:0.00})", foresightRange);
+        LifespanRangeTextUI.text = string.Format("Lifespan Range ({0:0.00})", lifespanRange);
+        FoodToBreedRangeTextUI.text = string.Format("Food To Breed Range ({0:0.00})", foodToBreedRange);
     }
 
     /// <summary>
@@ -90,6 +127,12 @@ public class SimManager : MonoBehaviour
         fossilFuelFoodBonus = FossilFuelFoodBonusSliderUI.value;
         fossilFuelPollutionPenalty = FossilFuelPollutionPenaltySliderUI.value;
         agingRate = AgingRateSliderUI.value;
+        altruismRange = AltruismRangeSliderUI.value;
+        charismaRange = CharismaRangeSliderUI.value;
+        trustRange = TrustRangeSliderUI.value;
+        foresightRange = ForesightRangeSliderUI.value;
+        lifespanRange = LifespanRangeSliderUI.value;
+        foodToBreedRange = FoodToBreedRangeSliderUI.value;
     }
 
     /// <summary>
@@ -107,6 +150,18 @@ public class SimManager : MonoBehaviour
         FossilFuelPollutionPenaltySliderUI.value = 0.005f;
         AgingRateSliderUI.maxValue = 1f;
         AgingRateSliderUI.value = 0.1f;
+        AltruismRangeSliderUI.maxValue = 50f;
+        AltruismRangeSliderUI.value = 10f;
+        CharismaRangeSliderUI.maxValue = 50f;
+        CharismaRangeSliderUI.value = 10f;
+        TrustRangeSliderUI.maxValue = 50f;
+        TrustRangeSliderUI.value = 10f;
+        ForesightRangeSliderUI.maxValue = 50f;
+        ForesightRangeSliderUI.value = 10f;
+        LifespanRangeSliderUI.maxValue = 50f;
+        LifespanRangeSliderUI.value = 10f;
+        FoodToBreedRangeSliderUI.maxValue = 25f;
+        FoodToBreedRangeSliderUI.value = 5f;
     }
 
     #endregion UI
@@ -118,10 +173,11 @@ public class SimManager : MonoBehaviour
     {
         screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
 
-        PopulateAgents();
         InitializeUI();
         UpdateSettings();
         pollution = FoodProductionRateSliderUI.value / 100; // Start with a small amount of pollution
+        PopulateAgents();
+        
     }
 
     // Update is called once per frame, used for graphics
