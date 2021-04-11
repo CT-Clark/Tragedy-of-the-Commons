@@ -1,6 +1,4 @@
-# CPSC565Project
-A repo for the CPSC565 2021 Group Project where we model a multi-agent system producing an emergent phenomenon based on the Tragedy of the Commons
-
+# The Tragedy of the Commons - A Simulation of Climate Change and Self-Governance
 The simulation is separated into two sections - the world state and the agents. Each section is managed by its own script, with the world state and UI managed by the SimScript and each agent managed by its own copy of the AgentScript. 
 
 ## The World
