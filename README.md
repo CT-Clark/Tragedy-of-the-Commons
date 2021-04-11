@@ -95,11 +95,11 @@ Finally the agents will age a preconfigured amount. These actions will be repeat
 
 ## UI
 
-The UI elements included within the simulation are sliders in order to change various values during the simulation, a background which changes from blue to black depending on the percentage of pollution in the world, agents which change colour depending on their energy source, and a “health bar” around the agents displaying the level of their food pool. 
-
 ![Silders](https://user-images.githubusercontent.com/23039052/114322032-5173f000-9adb-11eb-9c1b-edd99836d360.png)
 
 > (Configurable sliders)
+
+The UI elements included within the simulation are sliders in order to change various values during the simulation, a background which changes from blue to black depending on the percentage of pollution in the world, agents which change colour depending on their energy source, and a “health bar” around the agents displaying the level of their food pool. 
 
 ## Analysis
 
