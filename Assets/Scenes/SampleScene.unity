@@ -1107,6 +1107,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9038134848048514562, guid: 91e6180b37e869d458028c308397d0f7,
+        type: 3}
+      propertyPath: m_RenderMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9038134848048514562, guid: 91e6180b37e869d458028c308397d0f7,
+        type: 3}
+      propertyPath: m_PixelPerfect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9038134848048514563, guid: 91e6180b37e869d458028c308397d0f7,
+        type: 3}
+      propertyPath: m_ScaleFactor
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 9038134848048514563, guid: 91e6180b37e869d458028c308397d0f7,
+        type: 3}
+      propertyPath: m_UiScaleMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9038134848048514565, guid: 91e6180b37e869d458028c308397d0f7,
         type: 3}
       propertyPath: m_Name
