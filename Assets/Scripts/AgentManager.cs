@@ -204,7 +204,7 @@ public void ChangeLifespan(float amount)
     public void CheckCalamity()
     {
         // If pollution is too high and the agent is altruistic enough, change to (or continue to use) solar
-        if (simScript.pollutionPercentage > 100 - foresight && simScript.pollutionPercentage > altruism) 
+        if (simScript.pollutionPercentage > 100 - foresight && 100 - simScript.pollutionPercentage < altruism) 
         {
             // If energy source was previously fossil fuels print this to log
             if (energySource != "solar")
