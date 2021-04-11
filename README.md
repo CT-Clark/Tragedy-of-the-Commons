@@ -2,6 +2,8 @@
 
 ![World Example](https://user-images.githubusercontent.com/23039052/114322017-3d2ff300-9adb-11eb-96fa-7716ffbee6a4.png)
 
+(A heavily populated world)
+
 ## Background
 
 ## Goal
@@ -15,14 +17,16 @@ The simulation is separated into two sections - the world state and the agents. 
 The world state is composed of the amount of food produced each discrete time step, the amount of pollution present in the world, and the amount of food left in the world. The SimScript also contains all of the configurable elements of the simulation: the amount of food each agent collects when using solar energy, the bonus using fossil fuel energy confers when collecting food, the amount of pollution using fossil fuels produces, the rate at which agents age, and the range agent traits are assigned within when producing new agents. 
 
 ![Polluted](https://user-images.githubusercontent.com/23039052/114322047-65b7ed00-9adb-11eb-8ff6-84afdb1cbfeb.png)
-An example of a heavily polluted world state.
+
+(An example of a heavily polluted world state)
 
 The amount of food produced is determined as a function of the number of agents which inhabit the world. The more agents in the simulation, the more food produced each time step. This represents the idea that as more people populate a society the society must also contain an increasing number of food producers (farmers) in order to support its population. 
 
 ## The Agents
 
 ![Agents](https://user-images.githubusercontent.com/23039052/114321997-1ffb2480-9adb-11eb-9f0c-1cdda8a48ecc.png)
-An example of two agents - the green agent uses solar energy, the purple agent uses fossil fuels.
+
+(An example of two agents - the green agent uses solar energy while the purple agent uses fossil fuels)
 
 The AgentScript used for the agents contains the trait values for the individual agent as well as the logic which decides how the agent interacts with the world. 
 
@@ -90,4 +94,5 @@ Finally the agents will age a preconfigured amount. These actions will be repeat
 The UI elements included within the simulation are sliders in order to change various values during the simulation, a background which changes from blue to black depending on the percentage of pollution in the world, agents which change colour depending on their energy source, and a “health bar” around the agents displaying the level of their food pool. 
 
 ![Silders](https://user-images.githubusercontent.com/23039052/114322032-5173f000-9adb-11eb-9c1b-edd99836d360.png)
-Configurable sliders.
+
+(Configurable sliders)
