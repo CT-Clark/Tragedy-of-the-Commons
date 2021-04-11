@@ -31,13 +31,13 @@ Altruism is the measure of how willing an agent is to change their energy source
 ### Agent Actions
 
 Each discrete time step the agents perform the following actions:
-Eat food
-Check if they die
-Check if they breed
-Check the world state
-Gather food
-Move
-Age
+1) Eat food
+2) Check if they die
+3) Check if they breed
+4) Check the world state
+5) Gather food
+6) Move
+7) Age
 
 #### Eat Food
 
