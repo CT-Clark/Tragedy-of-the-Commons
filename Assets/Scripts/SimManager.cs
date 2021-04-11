@@ -45,6 +45,7 @@ public class SimManager : MonoBehaviour
     public List<AgentManager> agents = new List<AgentManager>();
     public AgentManager agent; // An object to hold an instance of an agent
     public GameObject AgentTemplate;
+    public Text messageText;
 
     //Colors showing pollution relative to food production
     public Color productiveCol = new Color(0.4f, 0.6f, 0.8f, 1);
@@ -185,6 +186,12 @@ public class SimManager : MonoBehaviour
     {
         UpdateSettings();
         DisplaySettings();
+        messageText.text = String.Format("{0} | {1} | {2} | {3} | {4}", 
+            String.Format("Agents: {0}", agents.Count), 
+            String.Format("Total Food: {0}", totalFood.ToString("0")), 
+            String.Format("Food Production: {0}", (agents.Count * FoodProductionRateSliderUI.value).ToString("0.0")), 
+            String.Format("Pollution: {0} - {1}%", pollution.ToString("0.0"), pollutionPercentage.ToString("0.0")),
+            String.Format("Average Lifespan: {0}", averageLifespan.ToString("0.0")));
     }
 
     // FixedUpdate is used for changing the simulation state 
