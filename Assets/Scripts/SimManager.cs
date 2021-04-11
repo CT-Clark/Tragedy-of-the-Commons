@@ -197,18 +197,15 @@ public class SimManager : MonoBehaviour
     // LateUpdate is called after FixedUpdate and is used to modify things after agents have acted
     void LateUpdate()
     {
-        tempAverageLifespan = 0;
-
-        foodProduction = agents.Count * FoodProductionRateSliderUI.value; // Food production is dependent on the number of agents so that it grows with population
-
         // Change the agents based on the world state
+        tempAverageLifespan = 0;
         foreach (AgentManager element in agents)
         {
             // The more pollution there is, the more it affects an agent's health (lifespan)
             element.ChangeLifespan(-pollutionPercentage / 10000); // An agent's lifespan decreases as the world is further polluted
             tempAverageLifespan += element.lifespan;
 
-            //Keep position within boundaries
+            // Keep position within boundaries
             Vector2 viewPos = element.transform.position;
             viewPos.x = Mathf.Clamp(viewPos.x, screenBounds.x * -1, screenBounds.x);
             viewPos.y = Mathf.Clamp(viewPos.y, screenBounds.y * -1, screenBounds.y);
@@ -219,7 +216,7 @@ public class SimManager : MonoBehaviour
         averageLifespan = tempAverageLifespan / agents.Count;
 
         // Add food to the world, the higher pollution the less food added
-        foodProduction = agents.Count * 2f;
+        foodProduction = agents.Count * FoodProductionRateSliderUI.value; // Food production is dependent on the number of agents so that it grows with population
         totalFood += Math.Max(0, (foodProduction - pollution));
 
         // Update background to reflect severity of pollution
