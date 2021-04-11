@@ -6,7 +6,11 @@
 
 ## Background
 
+**TODO:** Add a background on the TotC
+
 ## Goal
+
+**TODO:** Add what the purpose of this simulation is
 
 ## Implementation
 
@@ -89,10 +93,22 @@ The agents then move in a random direction some distance. This encourages agents
 
 Finally the agents will age a preconfigured amount. These actions will be repeated as long as the agent is still alive.
 
-### UI
+## UI
 
 The UI elements included within the simulation are sliders in order to change various values during the simulation, a background which changes from blue to black depending on the percentage of pollution in the world, agents which change colour depending on their energy source, and a “health bar” around the agents displaying the level of their food pool. 
 
 ![Silders](https://user-images.githubusercontent.com/23039052/114322032-5173f000-9adb-11eb-9c1b-edd99836d360.png)
 
 > (Configurable sliders)
+
+## Analysis
+
+### Extinction Event
+
+![Extinction](https://user-images.githubusercontent.com/23039052/114322327-d01d5d00-9adc-11eb-9add-005b0417575e.png)
+
+> (An example of an overpolluted world after an extinction event - Self-governance did not emerge)
+
+### Self-Governance
+
+### Known Bugs/Possible Changes
