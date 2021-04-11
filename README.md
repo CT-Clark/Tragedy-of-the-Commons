@@ -16,15 +16,16 @@ The AgentScript used for the agents contains the trait values for the individual
 ### Agent Traits
 
 The traits the agents possess are as follows:
-Altruism
-Charisma
-Trust
-Foresight
-Food quantity
-Age
-Food to breed
-Energy source
-Lifespan
+1) Altruism
+2) Charisma
+3) Trust
+4) Foresight
+5) Food quantity
+6) Age
+7) Food to breed
+8) Energy source
+9) Lifespan
+
 Altruism is the measure of how willing an agent is to change their energy source to solar - thereby reducing the amount of food to collect and their ability to breed. Charisma is how convincing this agent is when meeting other agents. Trust is a threshold other agents must exceed in order to convince this agent to change their ways. Energy source simply records whether this agent is using solar energy or fossil fuels. Finally, lifespan is how long this agent will live. 
 
 ### Agent Actions
