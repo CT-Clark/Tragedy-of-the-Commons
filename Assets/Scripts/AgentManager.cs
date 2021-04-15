@@ -39,6 +39,7 @@ public class AgentManager : MonoBehaviour
     public AgentManager agentScript; // A reference to another agent (used for collisions)
     public AgentManager parentScript; // A reference to this agent's parent to determine traits
     public GameObject AgentTemplate;
+    public bool markedForDeletion;
 
     #endregion
 
@@ -51,12 +52,15 @@ public class AgentManager : MonoBehaviour
         age = 0;
         altruismBonus = 5f;
         travelTime = 0.5f;
+        markedForDeletion = false;
     }
 
     // Start is called before the first frame update
     void Start()
     {
         Initialize();
+        slider.minValue = 0;
+        slider.maxValue = foodToBreed;
     }
 
     /// <summary>
@@ -72,12 +76,15 @@ public class AgentManager : MonoBehaviour
     {
         EatFood();
         CheckDeath();
-        CheckSpawn();
-        CheckCalamity();
-        GatherFood();
-        DrainAltruism();
-        Move();
-        age += simScript.AgingRateSliderUI.value;
+        if (!markedForDeletion)
+        {
+            CheckSpawn();
+            CheckCalamity();
+            GatherFood();
+            DrainAltruism();
+            Move();
+            age += simScript.AgingRateSliderUI.value;
+        }
     }
 
     // LateUpdate is called after FixedUpdate, used to handle collisions.
@@ -161,14 +168,14 @@ public void ChangeLifespan(float amount)
         if (foodQuantity >= foodToBreed + 10f 
             && age > 20f 
             //&& simScript.pollutionPercentage < 100 - foresight 
-            && simScript.totalFood > simScript.agents.Count * 1500)
+            && simScript.totalFood > simScript.agents.Count * 800)
         {
             foodQuantity -= foodToBreed; // Breeding uses food, that food is given to the spawned child
             GameObject agent = GameObject.Instantiate(AgentTemplate);
-            AgentManager agentScript = agent.GetComponent<AgentManager>();
-            agentScript.parentScript = GetComponent<AgentManager>(); // Used to pass on traits
+            AgentManager newAgentScript = agent.GetComponent<AgentManager>();
+            newAgentScript.parentScript = GetComponent<AgentManager>(); // Used to pass on traits
             agent.name = "Agent" + simScript.agentCount;
-            simScript.agents.Add(agentScript); // Add to the world agent list
+            simScript.agents.Add(newAgentScript); // Add to the world agent list
 
             // Change the new agent's location
             float spawnX = transform.position.x + UnityEngine.Random.Range(-10f, 10f);
@@ -188,12 +195,17 @@ public void ChangeLifespan(float amount)
         if (foodQuantity <= 0)
         {
             //Debug.Log(gameObject.name + " has died from lack of food.");
-            simScript.agents.Remove(GetComponent<AgentManager>());
-            Destroy(gameObject);
+            markedForDeletion = true;
+            
         }
-        if (age >= lifespan)
+        else if (age >= lifespan)
         {
             //Debug.Log(gameObject.name + " has died from old age.");
+            markedForDeletion = true;
+        }
+
+        if (markedForDeletion)
+        {
             simScript.agents.Remove(GetComponent<AgentManager>());
             Destroy(gameObject);
         }
@@ -317,7 +329,7 @@ public void ChangeLifespan(float amount)
     /// </summary>
     public void SetFoodUI()
     {
-        slider.value = foodQuantity;
+        slider.value = foodQuantity / foodToBreed * 100;
         fillImage.color = Color.Lerp(noFoodUI, foodUI, Math.Min(1f, foodQuantity / foodToBreed));
     }
 
@@ -334,7 +346,7 @@ public void ChangeLifespan(float amount)
                 UnityEngine.Random.Range(-simScript.trustRange, simScript.trustRange), 0, 100);
             foresight = Mathf.Clamp(parentScript.foresight +
                 UnityEngine.Random.Range(-simScript.foresightRange, simScript.foresightRange), 0, 100);
-            generation = parentScript.generation++;
+            generation = parentScript.generation + 1;
             energySource = parentScript.energySource; // Kids are more likely to follow their parents' lead, so use the same energy source
             lifespan = Math.Max(0, ((parentScript.lifespan +
                 UnityEngine.Random.Range(0f, simScript.lifespanRange)) + simScript.averageLifespan) / 2);
@@ -355,6 +367,7 @@ public void ChangeLifespan(float amount)
             lifespan = simScript.averageLifespan +
                 UnityEngine.Random.Range(-simScript.lifespanRange, simScript.lifespanRange);
             foodToBreed = 100f + UnityEngine.Random.Range(-simScript.foodToBreedRange, simScript.foodToBreedRange);
+            Debug.Log("New generation");
         }
 
         rigidBody = GetComponent<Rigidbody2D>();
