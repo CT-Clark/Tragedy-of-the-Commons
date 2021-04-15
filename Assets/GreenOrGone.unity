@@ -334,8 +334,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.022754, y: 433.9}
-  m_SizeDelta: {x: 1147.0454, y: 37.253193}
+  m_AnchoredPosition: {x: 0.00011444, y: 438.1}
+  m_SizeDelta: {x: 1410.9995, y: 28.895458}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &555877131
 MonoBehaviour:
@@ -792,7 +792,7 @@ MonoBehaviour:
   agentCount: 0
   screenBounds: {x: 0, y: 0}
   foodProduction: 1
-  totalFood: 1000000
+  totalFood: 100
   pollution: 0
   solarFoodValue: 0.5
   fossilFuelFoodBonus: 0.01

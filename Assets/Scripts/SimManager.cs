@@ -25,7 +25,7 @@ public class SimManager : MonoBehaviour
     public Vector2 screenBounds;
 
     public float foodProduction;
-    public float totalFood = 100000f; // Total amount of food the world starts with
+    public float totalFood = 100f; // Total amount of food the world starts with
     public float pollution;
     public float solarFoodValue; // The amount of food an agent using solar collects
     public float fossilFuelFoodBonus; // The bonus using fossil fuels to collect food

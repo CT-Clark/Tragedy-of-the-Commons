@@ -186,13 +186,13 @@ public void ChangeLifespan(float amount)
         // Check if the agent starves or dies from old age
         if (foodQuantity <= 0)
         {
-            Debug.Log(gameObject.name + " has died from lack of food.");
+            //Debug.Log(gameObject.name + " has died from lack of food.");
             simScript.agents.Remove(GetComponent<AgentManager>());
             Destroy(gameObject);
         }
         if (age >= lifespan)
         {
-            Debug.Log(gameObject.name + " has died from old age.");
+            //Debug.Log(gameObject.name + " has died from old age.");
             simScript.agents.Remove(GetComponent<AgentManager>());
             Destroy(gameObject);
         }
@@ -289,6 +289,11 @@ public void ChangeLifespan(float amount)
             foodQuantity += foodGained;
             simScript.totalFood -= foodGained;
             simScript.totalFood = Math.Max(0, simScript.totalFood);
+        }
+        else // If no food was gained then fossil fuels weren't used - Lower pollution
+        {
+            simScript.pollution -= simScript.fossilFuelPollutionPenalty;
+            simScript.pollution = Math.Max(0, simScript.pollution);
         }
     }
 
