@@ -58,11 +58,13 @@ Each discrete time step the agents perform the following actions:
 4) Check the world state
 5) Gather food
 6) Move
-7) Age
+7) Drain altruism
+8) Age
 
 #### Eat Food
 
-When eating food the agent subtracts an amount of food from their food pool equal to a random value between the amount of food gathered through solar energy and half the amount of food gathered through solar energy. This randomness is designed to stagger the times at which agents breed - due to breeding being based on amount of food possessed - as well to represent the hardship associated with using solar energy compared to fossil fuels, i.e., those who use fossil fuels always have an excess amount of food, whereas the agents who depend on solar energy could possibly end up with no food left over. 
+To eat food an agent subtracts a predetermined amount from their food pool. This predetermined amount should be lower than the solar food value so that even agents who neglect fossil fuels still end up with the surplus food amount needed to breed. 
+
 
 #### Check Death
 
@@ -71,11 +73,10 @@ Agents are born with a limited lifespan and each time step they age a fixed amou
 #### Check Breeding
 
 After the agent has eaten their food and has not died yet, they check whether they’re capable of breeding. In order to breed the agents must satisfy the following conditions:
-They possess enough food
-They’re 20+ time units old
-The world is not too polluted
-The world has enough food
-The amount of food needed to breed is randomly determined at the time of creation for each agent. Once an agent surpasses that amount (and all of the other conditions are met) then that amount is subtracted from their food pool and a new agent is created near this parent agent. This agent inherits a number of traits from its parent, as well as having these values randomly mutated by slight amounts. This ensures diversity within the simulation, and the random amount of food needed to breed likewise staggers new agent creation. We also reasoned that an agent would not feel comfortable bringing a child into the world if they thought the world may not support them; either the world is too polluted or there won’t be enough food for the child. In any case where the agent has enough food to breed yet doesn’t meet all of the other requirements they will simply continue to collect food until all of the requirements have been met.
+1) They possess enough food
+2) They’re 20+ time units old
+3) The world has enough food
+The amount of food needed to breed is randomly determined at the time of creation for each agent. Once an agent surpasses that amount (and all of the other conditions are met) then that amount is subtracted from their food pool and a new agent is created near this parent agent. This agent inherits a number of traits from its parent, as well as having these values randomly mutated by slight amounts. This ensures diversity within the simulation, and the random amount of food needed to breed likewise staggers new agent creation. We also reasoned that an agent would not feel comfortable bringing a child into the world if they thought the world may not support them, that is, that there won’t be enough food for the child. In any case where the agent has enough food to breed yet doesn’t meet all of the other requirements they will simply continue to collect food until all of the requirements have been met.
 
 #### Check Calamity
 
@@ -83,11 +84,16 @@ Next the agent checks the world state. This is where the bulk of the Tragedy of 
 
 #### Collect Food
 
-The agents will then collect food, with the amount they collect determined by their energy source. First the world has to contain enough food for them to collect. If the agent is using solar energy then they will collect a random amount of food between half to one and a half the configured amount of food solar energy provides. They will additionally lower the world’s pollution amount equal to half the amount using fossil fuels to collect food would generate. This represents the fact that it’s easier to pollute the world than to remove pollutants. If instead the agent is using fossil fuels they will collect the same amount of food as a solar energy user would collect plus an additional amount of food configured by the fossil fuel food bonus setting. This additional food will ensure this agent does not starve and is more quickly able to reach a state where they possess enough food to breed. However, using fossil fuels to collect food introduces an amount of pollution into the environment as configured by the pollution penalty setting. 
+The agents will then collect food, with the amount they collect determined by their energy source. First the world has to contain enough food for them to collect. If the agent is using solar energy then they will collect the amount configured by the solar food value slider. They will additionally lower the world’s pollution amount equal to the amount using fossil fuels to collect food would generate. If instead the agent is using fossil fuels they will collect the same amount of food as a solar energy user would collect plus an additional amount of food configured by the fossil fuel food bonus setting. This additional food will ensure this agent does not starve and is more quickly able to reach a state where they possess enough food to breed. However, using fossil fuels to collect food introduces an amount of pollution into the environment as configured by the pollution penalty setting. 
+
 
 #### Movement and Collisions
 
 The agents then move in a random direction some distance. This encourages agents to interact with other agents. If agents collide with each other then they use their charisma and trust scores in order to convince the other agent to become more altruistic. Should one agent have a higher charisma score than another agent’s trust, that charismatic agent successfully convinces the agent it collided with to become more altruistic. We reasoned that this would be an appropriate collision effect because altruistic agents want to convince other agents to become similarly altruistic, thus more willing to cooperate and self-sacrifice for the good of the community, and non-altruistic agents want to convince other agents to become altruistic because altruistic agents will likely consume less resources, thus leaving more resources for selfish agents. 
+
+#### Draining Altruism
+
+Each agent will have their altruism levels drained by an amount which is a function of how much food they possess. The more food they possess (such that they’re well fed) the less their altruism is drained. The hungrier they get, the less altruistic they become. This is implemented in order to combat collisions resulting in maximizing altruism levels across an unnaturally large number of agents. 
 
 #### Aging
 
