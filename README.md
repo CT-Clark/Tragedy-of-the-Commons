@@ -76,7 +76,7 @@ After the agent has eaten their food and has not died yet, they check whether th
 1) They possess enough food
 2) They’re 20+ time units old
 3) The world has enough food
-4) 
+
 The amount of food needed to breed is randomly determined at the time of creation for each agent. Once an agent surpasses that amount (and all of the other conditions are met) then that amount is subtracted from their food pool and a new agent is created near this parent agent. This agent inherits a number of traits from its parent, as well as having these values randomly mutated by slight amounts. This ensures diversity within the simulation, and the random amount of food needed to breed likewise staggers new agent creation. We also reasoned that an agent would not feel comfortable bringing a child into the world if they thought the world may not support them, that is, that there won’t be enough food for the child. In any case where the agent has enough food to breed yet doesn’t meet all of the other requirements they will simply continue to collect food until all of the requirements have been met.
 
 #### Check Calamity
