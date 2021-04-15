@@ -151,6 +151,7 @@ public class SimManager : MonoBehaviour
         FossilFuelPollutionPenaltySliderUI.minValue = 0.001f;
         FossilFuelPollutionPenaltySliderUI.value = 0.005f;
         AgingRateSliderUI.maxValue = 1f;
+        AgingRateSliderUI.minValue = 0.01f;
         AgingRateSliderUI.value = 0.1f;
         AltruismRangeSliderUI.maxValue = 50f;
         AltruismRangeSliderUI.value = 10f;
