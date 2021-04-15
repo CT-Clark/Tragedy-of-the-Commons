@@ -107,7 +107,7 @@ public class SimManager : MonoBehaviour
         FoodProductionRateTextUI.text = string.Format("Food Production Rate ({0:0.00})", foodProduction);
         SolarFoodValueTextUI.text = string.Format("Solar Food Value ({0:0.00})", solarFoodValue);
         FossilFuelFoodBonusTextUI.text = string.Format("Fossil Fuel Food Bonus ({0:0.00})", fossilFuelFoodBonus);
-        FossilFuelPollutionPenaltyTextUI.text = string.Format("Fossil Fuel Pollution Penalty ({0:0.00})", fossilFuelPollutionPenalty);
+        FossilFuelPollutionPenaltyTextUI.text = string.Format("Fossil Fuel Pollution Penalty ({0:.000})", fossilFuelPollutionPenalty);
         AgingRateTextUI.text = string.Format("Aging Rate ({0:0.00})", agingRate);
 
         AltruismRangeTextUI.text = string.Format("Altruism Range ({0:0.00})", altruismRange);
@@ -163,8 +163,8 @@ public class SimManager : MonoBehaviour
         ForesightRangeSliderUI.value = 10f;
         LifespanRangeSliderUI.maxValue = 50f;
         LifespanRangeSliderUI.value = 10f;
-        FoodToBreedRangeSliderUI.maxValue = 25f;
-        FoodToBreedRangeSliderUI.value = 5f;
+        FoodToBreedRangeSliderUI.maxValue = 50f;
+        FoodToBreedRangeSliderUI.value = 10f;
     }
 
     #endregion UI

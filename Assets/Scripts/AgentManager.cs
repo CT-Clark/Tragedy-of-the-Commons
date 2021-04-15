@@ -160,8 +160,8 @@ public void ChangeLifespan(float amount)
     {
         if (foodQuantity >= foodToBreed + 10f 
             && age > 20f 
-            && simScript.pollutionPercentage > 100 - foresight 
-            && simScript.totalFood > simScript.agents.Count * foresight * 5)
+            && simScript.pollutionPercentage < 100 - foresight 
+            && simScript.totalFood > simScript.agents.Count * foresight * 15)
         {
             foodQuantity -= foodToBreed; // Breeding uses food, that food is given to the spawned child
             GameObject agent = GameObject.Instantiate(AgentTemplate);
@@ -354,7 +354,7 @@ public void ChangeLifespan(float amount)
             AgentTemplate.GetComponent<SpriteRenderer>().color = simScript.fossilFuelsColor;
             lifespan = simScript.averageLifespan +
                 UnityEngine.Random.Range(-simScript.lifespanRange, simScript.lifespanRange);
-            foodToBreed = 80f + UnityEngine.Random.Range(-simScript.foodToBreedRange, simScript.foodToBreedRange);
+            foodToBreed = 100f + UnityEngine.Random.Range(-simScript.foodToBreedRange, simScript.foodToBreedRange);
         }
 
         rigidBody = GetComponent<Rigidbody2D>();
