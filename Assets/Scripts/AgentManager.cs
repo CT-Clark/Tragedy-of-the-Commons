@@ -75,6 +75,7 @@ public class AgentManager : MonoBehaviour
         CheckSpawn();
         CheckCalamity();
         GatherFood();
+        DrainAltruism();
         Move();
         age += simScript.AgingRateSliderUI.value;
     }
@@ -248,8 +249,6 @@ public void ChangeLifespan(float amount)
             {
                 altruism += altruismBonus;
                 altruism = Mathf.Clamp(altruism, 0, 100);
-                //float tempAltruism = altruism;
-                //Debug.Log(gameObject.name + "'s altruism score changed from " + tempAltruism + " -> " + altruism);
             }
         }
 
@@ -304,6 +303,14 @@ public void ChangeLifespan(float amount)
     public void EatFood()
     {
         foodQuantity -= 0.25f;
+    }
+
+    /// <summary>
+    /// This removes an amount of altruism from the agent each time step dependent on the amount of food this agent has.
+    /// The more food, the less altruism drained. This is to account for the perpetual increase from collisions.
+    /// </summary>
+    public void DrainAltruism()
+    {
         altruism -= (100 - Mathf.Clamp(foodQuantity, 0f, 100f)) * simScript.agingRate * 0.01f;
         altruism = Mathf.Clamp(altruism, 0f, 100f);
     }
