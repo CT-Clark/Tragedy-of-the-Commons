@@ -25,7 +25,7 @@ public class SimManager : MonoBehaviour
     public Vector2 screenBounds;
 
     public float foodProduction;
-    public float totalFood = 1000000f; // Total amount of food the world starts with
+    public float totalFood = 100000f; // Total amount of food the world starts with
     public float pollution;
     public float solarFoodValue; // The amount of food an agent using solar collects
     public float fossilFuelFoodBonus; // The bonus using fossil fuels to collect food
@@ -148,6 +148,7 @@ public class SimManager : MonoBehaviour
         FossilFuelFoodBonusSliderUI.maxValue = 0.5f;
         FossilFuelFoodBonusSliderUI.value = 0.05f;
         FossilFuelPollutionPenaltySliderUI.maxValue = 0.01f;
+        FossilFuelPollutionPenaltySliderUI.minValue = 0.001f;
         FossilFuelPollutionPenaltySliderUI.value = 0.005f;
         AgingRateSliderUI.maxValue = 1f;
         AgingRateSliderUI.value = 0.1f;
@@ -204,6 +205,17 @@ public class SimManager : MonoBehaviour
     // LateUpdate is called after FixedUpdate and is used to modify things after agents have acted
     void LateUpdate()
     {
+        foreach (AgentManager agent in agents)
+        {
+            if (agent)
+            {
+                if (!agent.enabled)
+                {
+                    agent.enabled = true;
+                }
+            }
+        }
+
         // Change the agents based on the world state
         tempAverageLifespan = 0;
         foreach (AgentManager element in agents)

@@ -264,14 +264,14 @@ public void ChangeLifespan(float amount)
         // Check to make sure food can still be gained, if it can't then don't add any food
         if (simScript.totalFood > simScript.solarFoodValue * 1.5 + simScript.fossilFuelFoodBonus)
         {
-            float foodGained = simScript.solarFoodValue + UnityEngine.Random.Range(-simScript.solarFoodValue/2, simScript.solarFoodValue/2); // Small amount of randomness, sometimes the agents find and eat more/less food
+            float foodGained = simScript.solarFoodValue; // Small amount of randomness, sometimes the agents find and eat more/less food
 
             if (energySource == "solar")
             {
                 // Heal pollution
                 if (simScript.pollution > 0f)
                 {
-                    simScript.pollution -= simScript.fossilFuelPollutionPenalty/2;
+                    simScript.pollution -= simScript.fossilFuelPollutionPenalty;
                     simScript.pollution = Math.Max(0, simScript.pollution);
                 }
             }
@@ -298,7 +298,9 @@ public void ChangeLifespan(float amount)
     /// </summary>
     public void EatFood()
     {
-        foodQuantity -= simScript.solarFoodValue - UnityEngine.Random.Range(0f, simScript.solarFoodValue / 2); 
+        foodQuantity -= 0.25f;
+        altruism -= (100 - Mathf.Clamp(foodQuantity, 0f, 100f)) * simScript.agingRate * 0.01f;
+        altruism = Mathf.Clamp(altruism, 0f, 100f);
     }
 
     /// <summary>
