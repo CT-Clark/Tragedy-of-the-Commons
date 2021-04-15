@@ -10,7 +10,7 @@
 
 ## Goal
 
-**TODO:** Add what the purpose of this simulation is
+Our goal with this simulation is to discover exactly which agent and world state attributes are necessary for the emergence of self-regulation, or if self-regulation will occur at all. The issue of climate change is a challenge currently faced by the human race; a race notoriously terrible at predicting ,visualizing, and addressing slow, relatively invisible, but disasterous change. This provides relevency for the issue of collective action as applied by the tragedy of the commons to a modern scenario. 
 
 ## Implementation
 
