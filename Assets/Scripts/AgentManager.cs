@@ -160,8 +160,8 @@ public void ChangeLifespan(float amount)
     {
         if (foodQuantity >= foodToBreed + 10f 
             && age > 20f 
-            && simScript.pollutionPercentage < 100 - foresight 
-            && simScript.totalFood > simScript.agents.Count * foresight * 15)
+            //&& simScript.pollutionPercentage < 100 - foresight 
+            && simScript.totalFood > simScript.agents.Count * 1500)
         {
             foodQuantity -= foodToBreed; // Breeding uses food, that food is given to the spawned child
             GameObject agent = GameObject.Instantiate(AgentTemplate);

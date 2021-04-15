@@ -142,7 +142,7 @@ public class SimManager : MonoBehaviour
     private void InitializeUI()
     {
         FoodProductionRateSliderUI.maxValue = 3f;
-        FoodProductionRateSliderUI.value = 1.5f;
+        FoodProductionRateSliderUI.value = 2.0f;
         SolarFoodValueSliderUI.maxValue = 1f;
         SolarFoodValueSliderUI.value = 0.5f;
         FossilFuelFoodBonusSliderUI.maxValue = 0.5f;
