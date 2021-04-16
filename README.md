@@ -8,7 +8,15 @@ Authors: Cody Clark, Serena Schimert, Taylor Skaalrud
 
 ## Background
 
-**TODO:** Add a background on the TotC
+Simply put, the tragedy of the commons surrounds itself around the concept of open-access resource systems. Originally concepted in the 1833 essay, Lloyd’s Pamphlet [1], which cited concerns over the over-grazing of goats on “common” grazing fields shared by neighbouring herders. 
+
+While grazing additional animals on the commons was an individually rational decision, it imposed negative externalities onto the all commoners, who’s proportional share of the commons per animal either shrunk or suffered at the extra pressure applied by the animals. Were each commoner to come to the same individually rational decision, the commons would swiftly be depleted and/or destroyed ultimately exchanging a sustainable shared resource for a short-sighted boom and bust. Later, Garret Hardin’s 1968 article “The Tragedy of the Commons” argued for a shift in morality and the management of resources-as-commons to “preserve and nurture other and more precious freedoms”[2] in the face of such ‘rational individuals’ whose personal impositions would apply such negative externalities in their tragedies that more than just the freedoms -- that allowed the tragedies in the first place -- would be lost. Hardin also developed the concept of the tragedy of the [unregulated] commons to include the environment as a “negative common” with regards to pollution, which deals with the deliberate commonization of the common cost of pollution, rather than the original definition which was concerned with a privatization of a beneficial resource. Critics often cite the capacity for commons to self-regulate in order to maintain the resource and satisfy both individual and collective interests. This enticed us to model around the concept of self-regulation -- to see if and when self-regulation emerges, what triggers it, and the potential tipping points which prevent the commons from recovering, or conversely, when external regulation should be implemented in order to maintain a given resource. The applicability of the tragedy of the commons as it pertains to a number of modern social issues (e.g. pollutions, floral and faunal industries[3], and information technologies[4]) was also a motivating factor to model it. The problem of the tragedy of the commons and why it is so difficult to approach is because it falls into the class of problems known as “wicked problems”; climate change is actually considered a “super wicked problem”[5] due to having a time limit, no central authority, those seeking to solve it are also responsible for causing it, and policies discount the future irrationally.
+
+[1] - W. F.  Lloyd. Two Lectures on the Checks to Population . England: Oxford University. JSTOR 1972412. OL 23458465M – via Wikisource. 1833.
+[2] - G. Hardin, “The Tragedy of the Commons,” Science, vol. 162, no. 3859, pp. 1243–1248, 1968. 
+[3] - E. Ostrom, R. Gardner, and J. Walker, Rules, Games, and Common-Pool Resources. Ann Arbor, MI, USA: Univ. Michigan Press, 1994. 
+[4] - E. Ostrom, J. Burger, C. B. Field, R. B. Norgaard, and D. Policansky, “Revisiting the commons: Local lessons, global challenges,” Science, vol. 284, no. 5412, pp. 278–282, 1999. 
+[5] - K. Levin, B. Cashore, S. Bernstein, and G. Auld, “Overcoming the tragedy of super wicked problems: constraining our future selves to ameliorate global climate change,” Policy Sciences, vol. 45, no. 2, pp. 123–152, 2012. 
 
 ## Goal
 
@@ -194,6 +202,8 @@ The type of agents could be expanded from representing individuals to representi
 ### Known Bugs/Possible Changes
 
 A limit has been applied on breeding in order to reduce mass overpopulation reducing the food source to 0 - rather than climate change. There is an artificial amount of food the agents must see in the world in order to feel comfortable breeding, but this may be too heavy-handed. Alternatively, unrestricted breeding that does not lead to overpopulation crushing the food supply results in poor performance on our hardware. Both of these issues are likely solvable, but perhaps outside of the scope of the assignment.
+
+Although eventually discarded in the implementation the idea of pollution being more difficult to remove than to add would make the simulation more relevant. The issue with this is that it caused the world to disolve into an extinction event very rapidly, before the agents had time to stabalize it through self-governance. Perhaps this is a haunting prediction of what's in store for us in the real world, but it would be interesting to expand this simulation to account for this discrepency.
 
 Because of the bounds of the screen often clumping of agents occur - whereby agents are unabled to escape from a mass of other agents and as a result of the massive number of collisions their altruism scores tend to skyrocket artificially. Fixing this would involve wrapping around the screen boundaries such that agents are able to freely move.
 
