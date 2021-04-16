@@ -188,7 +188,7 @@ We classify an extinction event in our model as a complete dying off of our popu
 
 ![extremelystable](https://user-images.githubusercontent.com/23039052/114954449-d894d100-9e17-11eb-9585-729b52220258.png)
 
-> (An extremely stable world state (Maybe due to bubbling) - 100000+ agents have lived thoughout the course of this simulation, with 106 generations)
+> (An extremely stable world state (Maybe due to clumping) - 100000+ agents have lived thoughout the course of this simulation, with 106 generations)
 
 Self-governance can typically be difficult to observe, for the sole reason that the world is continually in flux. It's simple to observe when an extinction event occurs, but it's tougher to deliminate what constitutes a stable and self-governed population. Often a world consisting of a mix of fossil fuel and solar power users can be seen, with a stable pollution percentage and stable life expectancy rates over an arbitrary period of time indicating that the agents are limiting their consumption habits on a wide enough scale so as to ensure their future survival. 
 
