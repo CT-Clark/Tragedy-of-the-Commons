@@ -18,6 +18,10 @@ Our goal with this simulation is to discover exactly which agent and world state
 
 The simulation is separated into two sections - the world state and the agents. Each section is managed by its own script, with the world state and UI managed by the SimScript and each agent managed by its own copy of the AgentScript. 
 
+This project is implemented in Unity 2019.4.20f1 <DX11>.
+  
+To interact with this project all one needs to do is download this repo, import the scene into Unity, and then press play. The sliders can only be set during the operation of the simulation.
+
 ## The World
 
 The world state is composed of the amount of food produced each discrete time step, the amount of pollution present in the world, and the amount of food left in the world. The SimScript also contains all of the configurable elements of the simulation: the amount of food each agent collects when using solar energy, the bonus using fossil fuel energy confers when collecting food, the amount of pollution using fossil fuels produces, the rate at which agents age, and the range agent traits are assigned within when producing new agents. 
@@ -128,7 +132,7 @@ Food stockpiles dictate the time that the population has to manage an environmen
 
 Stabilities including pollution will slowly decrease the average lifespan of the population, resulting in an eventual collapse wherein the population has become too infirm to support itself.
 
-### Slider Observations:(from default positions)
+### Slider Observations (from default positions):
 
 #### Food Production Rate
 As in indication of general technological ability for individuals to generate food. As each agent requires 0.25 food per time step, food collected in excess of that is put towards breeding/stockpiles but food production is hindered by pollution.
@@ -190,3 +194,10 @@ The type of agents could be expanded from representing individuals to representi
 ### Known Bugs/Possible Changes
 
 A limit has been applied on breeding in order to reduce mass overpopulation reducing the food source to 0 - rather than climate change. There is an artificial amount of food the agents must see in the world in order to feel comfortable breeding, but this may be too heavy-handed. Alternatively, unrestricted breeding that does not lead to overpopulation crushing the food supply results in poor performance on our hardware. Both of these issues are likely solvable, but perhaps outside of the scope of the assignment.
+
+Because of the bounds of the screen often clumping of agents occur - whereby agents are unabled to escape from a mass of other agents and as a result of the massive number of collisions their altruism scores tend to skyrocket artificially. Fixing this would involve wrapping around the screen boundaries such that agents are able to freely move.
+
+![clumping](https://user-images.githubusercontent.com/23039052/114953545-d7fb3b00-9e15-11eb-8b5b-2940afcf1b24.png)
+
+> (After 70000+ agents during this simulation clumping can be observed)
+
