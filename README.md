@@ -1,5 +1,7 @@
 # The Tragedy of the Commons - A Simulation of Climate Change and Self-Governance
 
+Authors: Cody Clark, Serena Schimert, Taylor Skaalrud
+
 ![Average](https://user-images.githubusercontent.com/23039052/114950993-6d480080-9e11-11eb-83b3-6cf84a9e1d05.png)
 
 > (A heavily populated world)
