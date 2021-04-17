@@ -30,6 +30,28 @@ This project is implemented in Unity 2019.4.20f1 <DX11>.
   
 To interact with this project all one needs to do is download this repo, import the scene into Unity, and then press play. The sliders can only be set during the operation of the simulation.
 
+### Sample Configurations
+
+(Default slider values assumed unless otherwise noted)
+
+#### Stable
+
+Food Production Rate: 2.22
+Fossil Fuel Food Bonus: 0.15
+Fossil Fuel Pollution Penalty: 0.02
+
+These settings provide for what appears to be an infinitely stable simulation which avoids an extinction event. According to our simulation we believe that in this case the phenomenon of self-regulation has emerged as our emergent.
+
+#### Extinction
+
+Food Production Rate: 3.00
+Solar Food Value: 0.00
+Fossil Fuel Food Bonus: 0.50
+Fossil Fuel Pollution Penalty: 0.10
+Aging Rate: 0.01
+
+These settings provide a shortcut to obtaining a quick extinction event.
+
 ## The World
 
 The world state is composed of the amount of food produced each discrete time step, the amount of pollution present in the world, and the amount of food left in the world. The SimScript also contains all of the configurable elements of the simulation: the amount of food each agent collects when using solar energy, the bonus using fossil fuel energy confers when collecting food, the amount of pollution using fossil fuels produces, the rate at which agents age, and the range agent traits are assigned within when producing new agents. 
