@@ -28,7 +28,7 @@ The simulation is separated into two sections - the world state and the agents. 
 
 This project is implemented in Unity 2019.4.20f1 <DX11>.
   
-To interact with this project 
+To interact with this project one can download a copy of this repo as a .zip file, extract it, and then in the assets folder double click on the GreenOrGone unity scene file. As long as Unity version 2019.4.20f1 or newer is installed it should be playable. This project has been successfully converted and run on Unity 2021.1.0f1, so any version between those two should work. 
 
 ### Sample Configurations
 
