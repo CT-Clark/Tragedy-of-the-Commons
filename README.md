@@ -28,7 +28,7 @@ The simulation is separated into two sections - the world state and the agents. 
 
 This project is implemented in Unity 2019.4.20f1 <DX11>.
   
-To interact with this project all one needs to do is download this repo, import the scene into Unity, and then press play. The sliders can only be set during the operation of the simulation.
+To interact with this project 
 
 ### Sample Configurations
 
