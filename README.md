@@ -36,19 +36,19 @@ To interact with this project all one needs to do is download this repo, import 
 
 #### Stable
 
-Food Production Rate: 2.22
-Fossil Fuel Food Bonus: 0.15
-Fossil Fuel Pollution Penalty: 0.02
+- Food Production Rate: 2.22
+- Fossil Fuel Food Bonus: 0.15
+- Fossil Fuel Pollution Penalty: 0.02
 
 These settings provide for what appears to be an infinitely stable simulation which avoids an extinction event. According to our simulation we believe that in this case the phenomenon of self-regulation has emerged as our emergent.
 
 #### Extinction
 
-Food Production Rate: 3.00
-Solar Food Value: 0.00
-Fossil Fuel Food Bonus: 0.50
-Fossil Fuel Pollution Penalty: 0.10
-Aging Rate: 0.01
+- Food Production Rate: 3.00
+- Solar Food Value: 0.00
+- Fossil Fuel Food Bonus: 0.50
+- Fossil Fuel Pollution Penalty: 0.10
+- Aging Rate: 0.01
 
 These settings provide a shortcut to obtaining a quick extinction event.
 
